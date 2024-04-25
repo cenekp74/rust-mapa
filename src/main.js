@@ -3,3 +3,6 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
+
+var numberIcon = L.divIcon({className: 'number-icon', html: "<b>" + 5 + "</b>"});
+L.marker([50, 14], {icon: numberIcon}).addTo(map);
