@@ -22,7 +22,7 @@ fn main() {
 // struct na ukladani bodu, ktery se pak zobrazi na mape
 struct PointData {
     locations: Vec<(f32, f32)>,
-    data: HashMap<&'static str, f32>
+    data: HashMap<String, Vec<f32>>
 }
 
 impl PointData {
@@ -47,6 +47,7 @@ fn load_data(filename: &str) -> Result<PointData, DataLoadError> {
     };
     let mut point_data = PointData::new();
     let lines: Vec<&str> = contents.split('\n').collect();
+
     for location in lines[0].split(',').skip(1) {
         let location = location.replace("[", "").replace("]", "");
         let location_split: Vec<&str> = location.split(";").collect();
@@ -63,6 +64,20 @@ fn load_data(filename: &str) -> Result<PointData, DataLoadError> {
         };
         point_data.locations.push((coord1, coord2));
     }
-    println!("{:?}", point_data.locations);
-    Err(DataLoadError::FileInvalid)
+    
+    for line in &lines[1..] {
+        let line_split: Vec<&str> = line.split(",").collect();
+        let datetime = String::from(line_split[0]);
+        let mut data: Vec<f32> = Vec::new();
+        for value_str in &line_split[1..] {
+            let value_result = value_str.parse::<f32>();
+            let value = match value_result {
+                Err(_) => return Err(DataLoadError::FileInvalid),
+                Ok(value) => value
+            };
+            data.push(value)
+        }
+        point_data.data.insert(datetime, data);
+    }
+    Ok(point_data)
 }
