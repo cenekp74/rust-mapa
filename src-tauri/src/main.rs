@@ -4,22 +4,26 @@
 use core::f32;
 use std::collections::HashMap;
 use std::fs;
+use serde::Serialize;
 
 #[tauri::command]
-fn greet() -> &'static str {
-    
-    let _ = load_data("C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/data.csv");
-    return "Hello! You've been greeted from Rust!";
+fn get_data(filename: &str) -> String {
+    let data = load_data(filename);
+    match data {
+        Err(_) => {return String::from("Data loading failed")}, // DODELAT CORRECT ERROR MESSAGES
+        Ok(data) => {return serde_json::to_string(&data).expect("Data serializing failed")}
+    }
 }
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![get_data])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
 
 // struct na ukladani bodu, ktery se pak zobrazi na mape
+#[derive(Serialize)]
 struct PointData {
     locations: Vec<(f32, f32)>,
     data: HashMap<String, Vec<f32>>
