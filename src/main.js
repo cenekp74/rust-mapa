@@ -1,3 +1,5 @@
+const { invoke } = window.__TAURI__.tauri
+
 var map = L.map('map').setView([50, 14.5], 5);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -6,3 +8,12 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 var numberIcon = L.divIcon({className: 'number-icon', html: "<b>" + 5 + "</b>"});
 L.marker([50, 14], {icon: numberIcon}).addTo(map);
+
+get_points("")
+
+async function get_points(time) {
+    await invoke('greet')
+        .then((response) => {
+            console.log(response)
+    })
+}
