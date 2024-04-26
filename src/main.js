@@ -17,7 +17,8 @@ get_data('C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/data.csv').then(functio
 function showPoints(datetime, data, zoom=5) {
     let icons = [];
     data.data[datetime].forEach(value => {
-        icons.push(L.divIcon({className: 'number-icon', html: `<b style='--zoom: ${zoom}'>` + parseFloat(value).toFixed(2) + "</b>"}));
+        if (value < 1) {}
+        icons.push(L.divIcon({className: 'number-icon', html: "<b>" + parseFloat(value).toFixed(2) + "</b>"}));
     })
     for (let i = 0; i < icons.length; i++) {
         L.marker([data.locations[i][1], data.locations[i][0]], {icon: icons[i]}).addTo(map)
@@ -25,13 +26,8 @@ function showPoints(datetime, data, zoom=5) {
 }
 
 map.on('zoomend', function() {   
-    var currentZoom = parseInt(map.getZoom());
-    map.eachLayer((layer) => {
-        if (layer instanceof L.Marker) {
-           layer.remove();
-        }
-      });
-    showPoints(window.datetime, window.data, zoom=currentZoom)
+    var currentZoom = map.getZoom();
+    document.body.style.setProperty('--current-zoom', currentZoom);
 });
 
 async function get_data(filename) {

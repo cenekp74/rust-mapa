@@ -1,3 +1,7 @@
+body {
+    --current-zoom: 5;
+}
+
 #map {
     height: 600px;
 }
@@ -7,5 +11,5 @@
 }
 
 .number-icon b {
-    font-size: calc(var(--zoom) * 2px);
+    font-size: calc(var(--current-zoom) * 2px);
 }
