@@ -1,3 +1,8 @@
 #map {
     height: 600px;
 }
+
+.number-icon {
+    color: #290202;
+    font-size: .5rem;
+}
