@@ -4,5 +4,8 @@
 
 .number-icon {
     color: #290202;
-    font-size: .5rem;
+}
+
+.number-icon b {
+    font-size: calc(var(--zoom) * 2px);
 }

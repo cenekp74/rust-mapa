@@ -2,7 +2,8 @@ const { invoke } = window.__TAURI__.tauri
 
 var map = L.map('map').setView([50, 14.5], 5);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
+    maxZoom: 10,
+    minZoom: 3,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
@@ -13,10 +14,10 @@ get_data('C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/data.csv').then(functio
     showPoints(window.datetime, window.data)
 })
 
-function showPoints(datetime, data, zoom='1') {
+function showPoints(datetime, data, zoom=5) {
     let icons = [];
     data.data[datetime].forEach(value => {
-        icons.push(L.divIcon({className: 'number-icon zoom-'+zoom, html: "<b>" + parseFloat(value).toFixed(2) + "</b>"}));
+        icons.push(L.divIcon({className: 'number-icon', html: `<b style='--zoom: ${zoom}'>` + parseFloat(value).toFixed(2) + "</b>"}));
     })
     for (let i = 0; i < icons.length; i++) {
         L.marker([data.locations[i][1], data.locations[i][0]], {icon: icons[i]}).addTo(map)
@@ -24,7 +25,12 @@ function showPoints(datetime, data, zoom='1') {
 }
 
 map.on('zoomend', function() {   
-    var currentZoom = map.getZoom();
+    var currentZoom = parseInt(map.getZoom());
+    map.eachLayer((layer) => {
+        if (layer instanceof L.Marker) {
+           layer.remove();
+        }
+      });
     showPoints(window.datetime, window.data, zoom=currentZoom)
 });
 
