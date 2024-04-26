@@ -7,6 +7,8 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+const squareRadiusMeters = 100000;
+
 window.datetime = '2023080112'
 
 get_data('C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/data.csv').then(function(response) {
@@ -14,14 +16,19 @@ get_data('C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/data.csv').then(functio
     showPoints(window.datetime, window.data)
 })
 
-function showPoints(datetime, data, zoom=5) {
-    let icons = [];
-    data.data[datetime].forEach(value => {
-        if (value < 1) {}
-        icons.push(L.divIcon({className: 'number-icon', html: "<b>" + parseFloat(value).toFixed(2) + "</b>"}));
-    })
-    for (let i = 0; i < icons.length; i++) {
-        L.marker([data.locations[i][1], data.locations[i][0]], {icon: icons[i]}).addTo(map)
+function showPoints(datetime, data) {
+    for (let i = 0; i < data.data[datetime].length; i++) {
+        var value = data.data[datetime][i]; 
+        var color = '#00ff00dd';
+        if (value < 1) {
+            color = '#0000ffdd';
+        }
+        let icon = L.divIcon({className: 'number-icon', html: "<b>" + parseFloat(value).toFixed(2) + "</b>"});
+        lat = data.locations[i][1]
+        lng = data.locations[i][0]
+        let bounds = L.latLng(lat, lng).toBounds(squareRadiusMeters); 
+        L.rectangle(bounds, {color: color, weight: 0}).addTo(map);
+        L.marker([lat, lng], {icon: icon}).addTo(map)
     }
 }
 
