@@ -44,3 +44,17 @@ async function get_data(filename) {
         })
     return JSON.parse(response)
 }
+
+document.getElementById('datetime-input').addEventListener('input', e => {
+    let date_iso = document.getElementById('datetime-input').value;
+    let date = new Date(date_iso);
+
+    let year = date.getFullYear();
+    let month = (date.getMonth() + 1).toString().padStart(2, '0');
+    let day = date.getDate().toString().padStart(2, '0');
+    let hours = date.getHours().toString().padStart(2, '0');
+
+    let formattedDate = `${year}${month}${day}${hours}`;
+    console.log(formattedDate);
+    showPoints(formattedDate, window.data);
+})
