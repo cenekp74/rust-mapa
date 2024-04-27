@@ -12,8 +12,8 @@ const squareRadiusMeters = 100000;
 window.datetime = '2023080200'
 window.filenames = {
     "gradT": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/gradT.csv',
-    "vMer": undefined,
-    "vMez": undefined,
+    "vMer": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vMer.csv', // merizonalni rychlost
+    "vZon": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vZon.csv', // zonalni rychlost
     "front": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv',
 }
 window.data = {}
