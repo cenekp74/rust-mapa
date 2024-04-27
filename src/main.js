@@ -20,12 +20,23 @@ window.data = {}
 
 get_data(window.filenames["gradT"]).then(function(response) {
     window.data["gradT"] = response
+    window.locations = response["locations"]
+    showPoints(window.locations)
     showPointsGradT(window.datetime, window.data["gradT"])
 })
 get_data(window.filenames["front"]).then(function(response) {
     window.data["front"] = response
     showPointsFront(window.datetime, window.data["front"])
 })
+
+function showPoints(locations) {
+    locations.forEach(location => {
+        lat = location[1]
+        lng = location[0]
+        let icon = L.divIcon({className: 'location-icon', html: "<i class='fa fa-circle'></i>"});
+        L.marker([lat, lng], {icon: icon}).addTo(map)
+    })
+}
 
 function showPointsGradT(datetime, data) {
     for (let i = 0; i < data.data[datetime].length; i++) {
