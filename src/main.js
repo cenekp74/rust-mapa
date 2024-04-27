@@ -17,6 +17,7 @@ window.filenames = {
     "front": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv',
 }
 window.data = {}
+window.markers = []
 
 get_data(window.filenames["gradT"]).then(function(response) {
     window.data["gradT"] = response
@@ -34,7 +35,9 @@ function showPoints(locations) {
         lat = location[1]
         lng = location[0]
         let icon = L.divIcon({className: 'location-icon', html: "<i class='fa fa-circle'></i>"});
-        L.marker([lat, lng], {icon: icon}).addTo(map)
+        let marker = L.marker([lat, lng], {icon: icon})
+        marker.addTo(map)
+        // nevolam window.markers.push(marker), protoze tyhle markery by mely zustat permanentne
     })
 }
 
@@ -49,8 +52,12 @@ function showPointsGradT(datetime, data) {
         lat = data.locations[i][1]
         lng = data.locations[i][0]
         let bounds = L.latLng(lat, lng).toBounds(squareRadiusMeters); 
-        L.rectangle(bounds, {color: color, weight: 0}).addTo(map);
-        L.marker([lat, lng], {icon: icon}).addTo(map)
+        let rect = L.rectangle(bounds, {color: color, weight: 0});
+        rect.addTo(map)
+        window.markers.push(rect)
+        let marker = L.marker([lat, lng], {icon: icon})
+        marker.addTo(map)
+        window.markers.push(marker)
     }
 }
 
@@ -62,9 +69,9 @@ function showPointsFront(datetime, data) {
         let icon = L.divIcon({className: 'number-icon icon-above', html: "<b>" + value + "</b>"});
         lat = data.locations[i][1]
         lng = data.locations[i][0]
-        let bounds = L.latLng(lat, lng).toBounds(squareRadiusMeters); 
-        L.rectangle(bounds, {color: color, weight: 0}).addTo(map);
-        L.marker([lat, lng], {icon: icon}).addTo(map)
+        let marker = L.marker([lat, lng], {icon: icon})
+        marker.addTo(map)
+        window.markers.push(marker)
     }
 }
 
@@ -82,6 +89,9 @@ async function get_data(filename) {
 }
 
 document.getElementById('datetime-input').addEventListener('input', e => {
+    window.markers.forEach(marker => {
+        map.removeLayer(marker)
+    })
     let date_iso = document.getElementById('datetime-input').value;
     let date = new Date(date_iso);
 
