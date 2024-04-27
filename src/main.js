@@ -10,13 +10,24 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 const squareRadiusMeters = 100000;
 
 window.datetime = '2023080112'
+window.filenames = {
+    "gradT": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/gradT.csv',
+    "vMer": undefined,
+    "vMez": undefined,
+    "front": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv',
+}
+window.data = {}
 
-get_data('C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/data.csv').then(function(response) {
-    window.data = response
-    showPoints(window.datetime, window.data)
+get_data(window.filenames["gradT"]).then(function(response) {
+    window.data["gradT"] = response
+    showPointsGradT(window.datetime, window.data["gradT"])
+})
+get_data(window.filenames["front"]).then(function(response) {
+    window.data["front"] = response
+    showPointsFront(window.datetime, window.data["front"])
 })
 
-function showPoints(datetime, data) {
+function showPointsGradT(datetime, data) {
     for (let i = 0; i < data.data[datetime].length; i++) {
         var value = data.data[datetime][i]; 
         var color = '#00ff00dd';
@@ -30,6 +41,10 @@ function showPoints(datetime, data) {
         L.rectangle(bounds, {color: color, weight: 0}).addTo(map);
         L.marker([lat, lng], {icon: icon}).addTo(map)
     }
+}
+
+function showPointsFront(datetime, data) {
+    //dodelat
 }
 
 map.on('zoomend', function() {   
