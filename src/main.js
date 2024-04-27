@@ -45,7 +45,7 @@ function showPointsGradT(datetime, data) {
         if (value < 1) {
             color = '#0000ffdd';
         }
-        let icon = L.divIcon({className: 'number-icon', html: "<b>" + parseFloat(value).toFixed(2) + "</b>"});
+        let icon = L.divIcon({className: 'number-icon icon-under', html: "<b>" + parseFloat(value).toFixed(2) + "</b>"});
         lat = data.locations[i][1]
         lng = data.locations[i][0]
         let bounds = L.latLng(lat, lng).toBounds(squareRadiusMeters); 

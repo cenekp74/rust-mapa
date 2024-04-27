@@ -8,10 +8,16 @@ body {
 
 .number-icon {
     color: #290202;
+    position: relative;
 }
 
 .number-icon b {
     font-size: calc(var(--current-zoom) * 2px);
+}
+
+.number-icon.icon-under b {
+    position: absolute;
+    top: calc(var(--current-zoom) * 2px + 1px);
 }
 
 .location-icon i {
