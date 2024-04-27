@@ -17,7 +17,12 @@ body {
 
 .number-icon.icon-under b {
     position: absolute;
-    top: calc(var(--current-zoom) * 2px + 1px);
+    top: calc(var(--current-zoom) * 2.2px + 1px);
+}
+
+.number-icon.icon-above b {
+    position: absolute;
+    bottom: calc(var(--current-zoom) * 1.8px - 1px);
 }
 
 .location-icon i {

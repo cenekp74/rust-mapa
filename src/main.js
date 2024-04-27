@@ -9,7 +9,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 const squareRadiusMeters = 100000;
 
-window.datetime = '2023080112'
+window.datetime = '2023080200'
 window.filenames = {
     "gradT": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/gradT.csv',
     "vMer": undefined,
@@ -44,7 +44,7 @@ function showPointsGradT(datetime, data) {
         var color = '#00ff00dd';
         if (value < 1) {
             color = '#0000ffdd';
-        }
+        } //dodelat barevnou skalu
         let icon = L.divIcon({className: 'number-icon icon-under', html: "<b>" + parseFloat(value).toFixed(2) + "</b>"});
         lat = data.locations[i][1]
         lng = data.locations[i][0]
@@ -55,7 +55,17 @@ function showPointsGradT(datetime, data) {
 }
 
 function showPointsFront(datetime, data) {
-    //dodelat
+    for (let i = 0; i < data.data[datetime].length; i++) {
+        var value = data.data[datetime][i];
+        if (value == -777) {continue}
+        var color = '#ffff00dd';
+        let icon = L.divIcon({className: 'number-icon icon-above', html: "<b>" + value + "</b>"});
+        lat = data.locations[i][1]
+        lng = data.locations[i][0]
+        let bounds = L.latLng(lat, lng).toBounds(squareRadiusMeters); 
+        L.rectangle(bounds, {color: color, weight: 0}).addTo(map);
+        L.marker([lat, lng], {icon: icon}).addTo(map)
+    }
 }
 
 map.on('zoomend', function() {   
@@ -82,5 +92,6 @@ document.getElementById('datetime-input').addEventListener('input', e => {
 
     let formattedDate = `${year}${month}${day}${hours}`;
     console.log(formattedDate);
-    showPoints(formattedDate, window.data);
+    showPointsGradT(formattedDate, window.data["gradT"]);
+    showPointsFront(formattedDate, window.data["front"]);
 })
