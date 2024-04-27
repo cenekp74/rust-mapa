@@ -14,7 +14,7 @@ window.filenames = {
     "gradT": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/gradT.csv',
     "vMer": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vMer.csv', // merizonalni rychlost
     "vZon": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vZon.csv', // zonalni rychlost
-    "front": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv',
+    "front": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv', // fronta - studena nebo tepla
 }
 window.data = {}
 window.markers = []
@@ -65,8 +65,11 @@ function showPointsFront(datetime, data) {
     for (let i = 0; i < data.data[datetime].length; i++) {
         var value = data.data[datetime][i];
         if (value == -777) {continue}
-        var color = '#ffff00dd';
-        let icon = L.divIcon({className: 'number-icon icon-above', html: "<b>" + value + "</b>"});
+        let color = '#ff0000';
+        if (value == 1) {
+            color = '#0000ff';
+        }
+        let icon = L.divIcon({className: 'number-icon icon-above', html: `<b style='color: ${color}'>${value}</b>`});
         lat = data.locations[i][1]
         lng = data.locations[i][0]
         let marker = L.marker([lat, lng], {icon: icon})
