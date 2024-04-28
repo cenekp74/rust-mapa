@@ -31,7 +31,7 @@ body {
 
 .arrow-icon i {
     background-image: url(images/arrow.svg);
-    width: calc(var(--length)*10px);
+    width: calc(var(--length)*3px * var(--current-zoom) + 5px);
     height: 10px;
     display: inline-block;
     background-size: 100% 10px;
