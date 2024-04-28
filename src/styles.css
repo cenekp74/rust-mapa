@@ -29,20 +29,13 @@ body {
     font-size: calc(var(--current-zoom) * 2px - 2px);
 }
 
-/* .arrow-icon i {
-    background-image: url(images/arrow.svg);
-    display: block;
-    width: 1px;
-    height: 1px;
-} */
-
 .arrow-icon i {
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 2px 0 2px calc(var(--length)*20px);
-    border-color: transparent transparent transparent #0000ffbb;
+    background-image: url(images/arrow.svg);
+    width: calc(var(--length)*10px);
+    height: 10px;
     display: inline-block;
+    background-size: 100% 10px;
+    background-repeat: no-repeat;
 }
 
 .arrow-icon i {
