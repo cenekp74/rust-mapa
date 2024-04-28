@@ -9,7 +9,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 const squareRadiusMeters = 100000;
 
-window.datetime = '2023080200'
+window.datetime = '2023082800'
 window.filenames = {
     "gradT": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/gradT.csv',
     "vMer": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vMer.csv', // merizonalni rychlost
@@ -29,6 +29,17 @@ get_data(window.filenames["front"]).then(function(response) {
     window.data["front"] = response
     showPointsFront(window.datetime, window.data["front"])
 })
+get_data(window.filenames["vMer"]).then(function(response) {
+    window.data["vMer"] = response
+    get_data(window.filenames["vZon"]).then(function(response) {
+        window.data["vZon"] = response
+        showPointsV(window.datetime, window.data['vMer'], window.data['vZon'])
+    })
+})
+
+function calcAngleDegrees(x, y) {
+    return (Math.atan2(y, x) * 180) / Math.PI;
+}
 
 function showPoints(locations) {
     locations.forEach(location => {
@@ -78,6 +89,26 @@ function showPointsFront(datetime, data) {
     }
 }
 
+function showPointsV(datetime, dataMer, dataZon) {
+    for (let i = 0; i < dataMer.data[datetime].length; i++) {
+        var vMer = dataMer.data[datetime][i];
+        var vZon = dataZon.data[datetime][i];
+        if (vMer == -777) {continue}
+        if (vZon == -777) {continue}
+
+        let angleDeg = calcAngleDegrees(vZon, vMer)
+        let length = Math.sqrt(vZon**2 + vMer**2)
+        console.log(vZon, vMer, angleDeg, length)
+
+        let icon = L.divIcon({className: 'arrow-icon icon-above', html: `<i style="--rotate: ${angleDeg}deg; --length: ${length}"></i>`});
+        lat = dataMer.locations[i][1]
+        lng = dataMer.locations[i][0]
+        let marker = L.marker([lat, lng], {icon: icon})
+        marker.addTo(map)
+        window.markers.push(marker)
+    }
+}
+
 map.on('zoomend', function() {   
     var currentZoom = map.getZoom();
     document.body.style.setProperty('--current-zoom', currentZoom);
@@ -104,7 +135,9 @@ document.getElementById('datetime-input').addEventListener('input', e => {
     let hours = date.getHours().toString().padStart(2, '0');
 
     let formattedDate = `${year}${month}${day}${hours}`;
-    console.log(formattedDate);
+
+    window.datetime = formattedDate
     showPointsGradT(formattedDate, window.data["gradT"]);
     showPointsFront(formattedDate, window.data["front"]);
+    showPointsV(formattedDate, window.data["vMer"], window.data["vZon"])
 })
