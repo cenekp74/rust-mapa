@@ -36,6 +36,8 @@ get_data(window.filenames["vMer"]).then(function(response) {
     })
 })
 
+const zeroPad = (num, places) => String(num).padStart(places, '0')
+
 function calcAngleDegrees(x, y) {
     return (Math.atan2(y, x) * 180) / Math.PI;
 }
@@ -84,7 +86,7 @@ function showPointsGradT(datetime, data) {
         lat = data.locations[i][1]
         lng = data.locations[i][0]
         let bounds = L.latLng(lat, lng).toBounds(squareRadiusMeters); 
-        let rect = L.rectangle(bounds, {color: color, weight: 0, fillOpacity: .4});
+        let rect = L.rectangle(bounds, {color: color, weight: 0, fillOpacity: .7});
         rect.addTo(map)
         window.markers.push(rect)
         let marker = L.marker([lat, lng], {icon: icon})
@@ -123,8 +125,8 @@ function showPointsV(datetime, dataMer, dataZon) {
         
         let color = 'black'
         if (window.data["front"]) {
-            if (window.data["front"].data[datetime][i] == -1) {color = 'red'}
-            if (window.data["front"].data[datetime][i] == 1) {color = 'blue'}
+            if (window.data["front"].data[datetime][i] == 1) {color = 'red'}
+            if (window.data["front"].data[datetime][i] == -1) {color = 'blue'}
         }
 
         let icon = L.divIcon({className: `arrow-icon icon-above arrow-${color}`, html: `<i style="--rotate: ${angleDeg}deg; --length: ${length}"></i>`});
@@ -149,21 +151,27 @@ async function get_data(filename) {
     return JSON.parse(response)
 }
 
-document.getElementById('datetime-input').addEventListener('input', e => {
+document.getElementById('reload-button').addEventListener('click', e => {
     window.markers.forEach(marker => {
         map.removeLayer(marker)
     })
-    let date_iso = document.getElementById('datetime-input').value;
+    let date_iso = document.getElementById('date-input').value;
     let date = new Date(date_iso);
 
     let year = date.getFullYear();
     let month = (date.getMonth() + 1).toString().padStart(2, '0');
     let day = date.getDate().toString().padStart(2, '0');
-    let hours = date.getHours().toString().padStart(2, '0');
+    let formattedDate = `${year}${month}${day}`;
 
-    let formattedDate = `${year}${month}${day}${hours}`;
+    let hour = zeroPad(document.getElementById('time-select').value, 2)
+    let datetime = formattedDate + hour
+    
+    if (datetime.length != 10) {
+        // DODELAT ERROR MESSAGE
+        return
+    }
 
-    window.datetime = formattedDate
-    showPointsGradT(formattedDate, window.data["gradT"]);
-    showPointsV(formattedDate, window.data["vMer"], window.data["vZon"])
+    window.datetime = datetime
+    showPointsGradT(datetime, window.data["gradT"]);
+    showPointsV(datetime, window.data["vMer"], window.data["vZon"])
 })
