@@ -13,6 +13,7 @@ body {
 
 .number-icon b {
     font-size: calc(var(--current-zoom) * 2px);
+    transform: translateX(-40%); /* je to 40 a ne 50 protoze predpokladam ze cislo je zaorouhleny na 2 desetinny mista a chci mit tecku cca uprostred */
 }
 
 .number-icon.icon-under b {

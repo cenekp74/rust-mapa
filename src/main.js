@@ -58,7 +58,7 @@ function showPointsGradT(datetime, data) {
 
     for (let i = 0; i < data.data[datetime].length; i++) {
         var value = data.data[datetime][i]; 
-        var color = '#aa335c';
+        let color = '#aa335c';
         if (value < maxGradT-step) {
             color = '#d75963';
         }
