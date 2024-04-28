@@ -98,9 +98,14 @@ function showPointsV(datetime, dataMer, dataZon) {
 
         let angleDeg = calcAngleDegrees(vZon, vMer)
         let length = Math.sqrt(vZon**2 + vMer**2)
-        console.log(vZon, vMer, angleDeg, length)
+        
+        let color = 'black'
+        if (window.data["front"]) {
+            if (window.data["front"].data[datetime][i] == -1) {color = 'red'}
+            if (window.data["front"].data[datetime][i] == 1) {color = 'blue'}
+        }
 
-        let icon = L.divIcon({className: 'arrow-icon icon-above', html: `<i style="--rotate: ${angleDeg}deg; --length: ${length}"></i>`});
+        let icon = L.divIcon({className: `arrow-icon icon-above arrow-${color}`, html: `<i style="--rotate: ${angleDeg}deg; --length: ${length}"></i>`});
         lat = dataMer.locations[i][1]
         lng = dataMer.locations[i][0]
         let marker = L.marker([lat, lng], {icon: icon})

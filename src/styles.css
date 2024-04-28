@@ -38,6 +38,14 @@ body {
     background-repeat: no-repeat;
 }
 
+.arrow-icon.arrow-blue i {
+    background-image: url(images/arrow_blue.svg);
+}
+
+.arrow-icon.arrow-red i {
+    background-image: url(images/arrow_red.svg);
+}
+
 .arrow-icon i {
     transform-origin: left;
     transform: rotate(var(--rotate));
