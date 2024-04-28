@@ -1,7 +1,7 @@
 [package]
-name = "rust-mapa"
-version = "0.0.0"
-description = "An app for viewing meteorological data on a map"
+name = "oa-map"
+version = "0.0.1"
+description = "An app for viewing meteorological objective analysis data on a map"
 authors = ["potuznikcenek@gmail.com"]
 edition = "2021"
 
