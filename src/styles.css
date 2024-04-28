@@ -27,7 +27,7 @@ body {
 
 .location-icon i {
     font-size: calc(var(--current-zoom) * 2px - 2px);
-    transform: translateX(-40%);
+    transform: translateX(-50%);
 }
 
 .arrow-icon i {

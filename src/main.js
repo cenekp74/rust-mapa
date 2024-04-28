@@ -27,7 +27,6 @@ get_data(window.filenames["gradT"]).then(function(response) {
 })
 get_data(window.filenames["front"]).then(function(response) {
     window.data["front"] = response
-    showPointsFront(window.datetime, window.data["front"])
 })
 get_data(window.filenames["vMer"]).then(function(response) {
     window.data["vMer"] = response
@@ -72,6 +71,7 @@ function showPointsGradT(datetime, data) {
     }
 }
 
+// ukazuje -1 pro teplou a 1 pro studenou frontu - obsolete
 function showPointsFront(datetime, data) {
     for (let i = 0; i < data.data[datetime].length; i++) {
         var value = data.data[datetime][i];
@@ -143,6 +143,5 @@ document.getElementById('datetime-input').addEventListener('input', e => {
 
     window.datetime = formattedDate
     showPointsGradT(formattedDate, window.data["gradT"]);
-    showPointsFront(formattedDate, window.data["front"]);
     showPointsV(formattedDate, window.data["vMer"], window.data["vZon"])
 })
