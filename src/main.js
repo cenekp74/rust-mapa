@@ -174,4 +174,8 @@ document.getElementById('reload-button').addEventListener('click', e => {
     window.datetime = datetime
     showPointsGradT(datetime, window.data["gradT"]);
     showPointsV(datetime, window.data["vMer"], window.data["vZon"])
+
+    let datetimeDisplayEle = document.getElementById('datetime-display')
+    prettyDatetime = `${day}.${month}.${year} ${hour}h`
+    datetimeDisplayEle.innerText = prettyDatetime
 })
