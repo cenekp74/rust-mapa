@@ -54,39 +54,26 @@ function showPoints(locations) {
 }
 
 function showPointsGradT(datetime, data) {
-    let maxGradT = Math.max(...data.data[datetime])
-    let minGradT = Math.min(...data.data[datetime])
-    let step = (maxGradT - minGradT) / 7
-
     for (let i = 0; i < data.data[datetime].length; i++) {
         var value = data.data[datetime][i]; 
-        let color = '#aa335c';
-        if (value < maxGradT-step) {
-            color = '#d75963';
+        let color = '#fff';
+        if (value > 1) {
+            color = '#fff2cc'
         }
-        if (value < maxGradT-step) {
-            color = '#e19745';
+        if (value > 2) {
+            color = '#ffd966'
         }
-        if (value < maxGradT-step*2) {
-            color = '#e3cc3b';
+        if (value > 3) {
+            color = '#bf8f00'
         }
-        if (value < maxGradT-step*3) {
-            color = '#b8db41';
-        }
-        if (value < maxGradT-step*4) {
-            color = '#52c84a';
-        }
-        if (value < maxGradT-step*5) {
-            color = '#4aa7a2';
-        }
-        if (value < maxGradT-step*6) {
-            color = '#4b67bc';
+        if (value > 4) {
+            color = '#806000'
         }
         let icon = L.divIcon({className: 'number-icon icon-under', html: "<b>" + parseFloat(value).toFixed(2) + "</b>"});
         lat = data.locations[i][1]
         lng = data.locations[i][0]
         let bounds = L.latLng(lat, lng).toBounds(squareRadiusMeters); 
-        let rect = L.rectangle(bounds, {color: color, weight: 0, fillOpacity: .7});
+        let rect = L.rectangle(bounds, {color: color, weight: 0, fillOpacity: .6});
         rect.addTo(map)
         window.markers.push(rect)
         let marker = L.marker([lat, lng], {icon: icon})
