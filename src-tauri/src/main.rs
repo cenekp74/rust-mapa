@@ -41,9 +41,18 @@ fn get_config() -> String {
     String::from(config_str)
 }
 
+#[tauri::command]
+fn set_config(config_str: &str) -> String {
+    let res = write_config("config.json", config_str);
+    if let Ok(_) = res {
+        return String::from("success")
+    }
+    String::from("error writing config")
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![get_data, get_config])
+        .invoke_handler(tauri::generate_handler![get_data, get_config, set_config])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

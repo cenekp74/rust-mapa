@@ -143,6 +143,10 @@ async function get_config() {
     return JSON.parse(response)
 }
 
+async function set_config(configStr) {
+    response = await invoke('set_config', {configStr:configStr})
+}
+
 document.getElementById('reload-button').addEventListener('click', e => {
     window.config['showGradT'] = document.getElementById('gradT-input').checked
     window.config['showFront'] = document.getElementById('front-input').checked
@@ -176,4 +180,6 @@ document.getElementById('reload-button').addEventListener('click', e => {
     let datetimeDisplayEle = document.getElementById('datetime-display')
     prettyDatetime = `${day}.${month}.${year} ${hour}h`
     datetimeDisplayEle.innerText = prettyDatetime
+
+    set_config(JSON.stringify(window.config, null, 4))
 })
