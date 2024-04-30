@@ -9,33 +9,39 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 const squareRadiusMeters = 100000;
 
-window.config = {}
-window.config["datetime"] = '2023082800'
-window.config['filenames'] = {
-    "gradT": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/gradT.csv',
-    "vMer": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vMer.csv', // merizonalni rychlost
-    "vZon": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vZon.csv', // zonalni rychlost
-    "front": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv', // fronta - studena nebo tepla
-}
-window.data = {}
-window.markers = []
+get_config().then((config) => {
+    window.config = config
+    console.log(config)
+    window.data = {}
+    window.markers = []
 
-get_data(window.config['filenames']["gradT"]).then(function(response) {
-    window.data["gradT"] = response
-    window.locations = response["locations"]
-    showPoints(window.locations)
-    showPointsGradT(window.config['datetime'], window.data["gradT"])
-})
-get_data(window.config['filenames']["front"]).then(function(response) {
-    window.data["front"] = response
-})
-get_data(window.config['filenames']["vMer"]).then(function(response) {
-    window.data["vMer"] = response
-    get_data(window.config['filenames']["vZon"]).then(function(response) {
-        window.data["vZon"] = response
-        showPointsV(window.config['datetime'], window.data['vMer'], window.data['vZon'])
+    get_data(window.config['filenames']["gradT"]).then(function(response) {
+        window.data["gradT"] = response
+        window.locations = response["locations"]
+        showPoints(window.locations)
+        showPointsGradT(window.config['datetime'], window.data["gradT"])
+    })
+    get_data(window.config['filenames']["front"]).then(function(response) {
+        window.data["front"] = response
+    })
+    get_data(window.config['filenames']["vMer"]).then(function(response) {
+        window.data["vMer"] = response
+        get_data(window.config['filenames']["vZon"]).then(function(response) {
+            window.data["vZon"] = response
+            showPointsV(window.config['datetime'], window.data['vMer'], window.data['vZon'])
+        })
     })
 })
+
+// window.config = {}
+// window.config["datetime"] = '2023082800'
+// window.config['filenames'] = {
+//     "gradT": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/gradT.csv',
+//     "vMer": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vMer.csv', // merizonalni rychlost
+//     "vZon": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vZon.csv', // zonalni rychlost
+//     "front": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv', // fronta - studena nebo tepla
+// }
+
 
 const zeroPad = (num, places) => String(num).padStart(places, '0')
 
@@ -133,6 +139,14 @@ map.on('zoomend', function() {
 
 async function get_data(filename) {
     response = await invoke('get_data', {filename:filename})
+        .then((response) => {
+            return response;
+        })
+    return JSON.parse(response)
+}
+
+async function get_config() {
+    response = await invoke('get_config')
         .then((response) => {
             return response;
         })
