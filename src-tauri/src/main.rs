@@ -6,6 +6,19 @@ use std::collections::HashMap;
 use std::fs;
 use serde::Serialize;
 
+const DEFAULT_CONFIG: &str = r#"{
+    "datetime": "2023082800",
+    "filenames": {
+        "gradT": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/gradT.csv",
+        "vMer": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vMer.csv",
+        "vZon": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vZon.csv",
+        "front": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv"
+    },
+    "showGradT": true,
+    "showV": true,
+    "showFront": false
+}"#;
+
 #[tauri::command]
 fn get_data(filename: &str) -> String {
     let data = load_data(filename);
@@ -15,9 +28,21 @@ fn get_data(filename: &str) -> String {
     }
 }
 
+#[tauri::command]
+fn get_config() -> String {
+    let config_str_result = load_config("config.json");
+    let config_str: String = match config_str_result {
+        Err(_) => {
+            String::from(DEFAULT_CONFIG)
+        }
+        Ok(conf) => {conf}
+    };
+    String::from(config_str)
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![get_data])
+        .invoke_handler(tauri::generate_handler![get_data, get_config])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -41,6 +66,20 @@ impl PointData {
 enum DataLoadError {
     FileNotFound,
     FileInvalid,
+}
+
+fn load_config(filename: &str) -> Result<String, DataLoadError> {
+    let contents_result = fs::read_to_string(filename);
+    let contents = match contents_result {
+        Err(_) => return Err(DataLoadError::FileNotFound),
+        Ok(cont) => cont.replace("\r", ""),
+    };
+    Ok(contents)
+}
+
+fn write_config(filename: &str, config: &str) -> std::io::Result<()> {
+    fs::write(filename, config)?;
+    Ok(())
 }
 
 fn load_data(filename: &str) -> Result<PointData, DataLoadError> {
