@@ -31,6 +31,16 @@ get_config().then((config) => {
             showPointsV(window.config['datetime'], window.data['vMer'], window.data['vZon'])
         })
     })
+
+    let iso_date = convertToISO(window.config["datetime"]);
+    document.getElementById('date-input').value = iso_date
+
+    let hour = window.config["datetime"].substring(8, 10);
+    document.getElementById('time-select').value = hour
+
+    document.getElementById('gradT-input').checked = window.config["showGradT"]
+    document.getElementById('front-input').checked = window.config["showFront"]
+    document.getElementById('v-input').checked = window.config["showV"]
 })
 
 const zeroPad = (num, places) => String(num).padStart(places, '0')
@@ -120,6 +130,14 @@ function showPointsV(datetime, dataMer, dataZon) {
         marker.addTo(map)
         window.markers.push(marker)
     }
+}
+
+function convertToISO(dateStr) {
+    const year = dateStr.substring(0, 4);
+    const month = dateStr.substring(4, 6);
+    const day = dateStr.substring(6, 8);
+    const isoDate = `${year}-${month}-${day}`;
+    return isoDate;
 }
 
 map.on('zoomend', function() {   
