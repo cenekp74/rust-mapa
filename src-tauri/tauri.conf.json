@@ -6,7 +6,7 @@
   },
   "package": {
     "productName": "oa-map",
-    "version": "0.0.1"
+    "version": "0.0.2"
   },
   "tauri": {
     "allowlist": {
@@ -18,9 +18,9 @@
     },
     "windows": [
       {
-        "title": "Mapa OA fronty - alfa verze",
+        "title": "Mapa OA fronty v 0.0.2",
         "width": 800,
-        "height": 600
+        "height": 800
       }
     ],
     "security": {
