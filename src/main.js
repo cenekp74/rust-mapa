@@ -8,6 +8,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 const squareRadiusMeters = 100000;
+const circleRadiusMeters = 100000;
 
 get_config().then((config) => {
     window.config = config
@@ -189,6 +190,10 @@ function showPointsMlWmaxshear(datetime, data) {
         let marker2 = L.marker([lat, lng], {icon: icon2})
         marker2.addTo(map)
         window.markers.push(marker2)
+
+        let marker3 = L.circle([lat,lng], circleRadiusMeters, {weight: 1, fillOpacity: .4});
+        marker3.addTo(map)
+        window.markers.push(marker3)
     }
 }
 
