@@ -11,7 +11,6 @@ const squareRadiusMeters = 100000;
 
 get_config().then((config) => {
     window.config = config
-    console.log(config)
     window.data = {}
     window.markers = []
 
@@ -140,6 +139,28 @@ function convertToISO(dateStr) {
     return isoDate;
 }
 
+function addHoursToDateTime(datetime, n) {
+    if (datetime.length !== 10 || isNaN(parseInt(datetime)) || isNaN(parseInt(n))) {
+        throw new Error("Invalid input");
+    }
+
+    const year = parseInt(datetime.substring(0, 4));
+    const month = parseInt(datetime.substring(4, 6));
+    const day = parseInt(datetime.substring(6, 8));
+    const hour = parseInt(datetime.substring(8, 10));
+
+    let date = new Date(year, month - 1, day, hour);
+
+    date.setHours(date.getHours() + n);
+
+    const formattedYear = date.getFullYear().toString();
+    const formattedMonth = (date.getMonth() + 1).toString().padStart(2, '0');
+    const formattedDay = date.getDate().toString().padStart(2, '0');
+    const formattedHour = date.getHours().toString().padStart(2, '0');
+
+    return formattedYear + formattedMonth + formattedDay + formattedHour;
+}
+
 map.on('zoomend', function() {   
     var currentZoom = map.getZoom();
     document.body.style.setProperty('--current-zoom', currentZoom);
@@ -165,7 +186,7 @@ async function set_config(configStr) {
     response = await invoke('set_config', {configStr:configStr})
 }
 
-document.getElementById('reload-button').addEventListener('click', e => {
+function reload() {
     window.config['showGradT'] = document.getElementById('gradT-input').checked
     window.config['showFront'] = document.getElementById('front-input').checked
     window.config['showV'] = document.getElementById('v-input').checked
@@ -200,4 +221,30 @@ document.getElementById('reload-button').addEventListener('click', e => {
     datetimeDisplayEle.innerText = prettyDatetime
 
     set_config(JSON.stringify(window.config, null, 4))
+}
+
+function forw() {
+    window.config['datetime'] = addHoursToDateTime(window.config['datetime'], 12)
+    let iso_date = convertToISO(window.config["datetime"]);
+    document.getElementById('date-input').value = iso_date
+
+    let hour = window.config["datetime"].substring(8, 10);
+    document.getElementById('time-select').value = hour
+
+    reload()
+}
+
+function back() {
+    window.config['datetime'] = addHoursToDateTime(window.config['datetime'], -12)
+    let iso_date = convertToISO(window.config["datetime"]);
+    document.getElementById('date-input').value = iso_date
+
+    let hour = window.config["datetime"].substring(8, 10);
+    document.getElementById('time-select').value = hour
+
+    reload()
+}
+
+document.getElementById('reload-button').addEventListener('click', e => {
+    reload();
 })
