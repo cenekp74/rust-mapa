@@ -1,12 +1,14 @@
 {
-    "datetime": "2023082912",
+    "datetime": "2023082500",
     "filenames": {
         "gradT": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/gradT.csv",
         "vMer": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vMer.csv",
         "vZon": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vZon.csv",
-        "front": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv"
+        "front": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv",
+        "mlWmaxshear": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/ml_wmaxshear.csv"
     },
-    "showGradT": true,
-    "showV": true,
-    "showFront": false
+    "showGradT": false,
+    "showV": false,
+    "showFront": false,
+    "showMlWmaxshear": true
 }

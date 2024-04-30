@@ -31,6 +31,9 @@ get_config().then((config) => {
             showPointsV(window.config['datetime'], window.data['vMer'], window.data['vZon'])
         })
     })
+    get_data(window.config['filenames']["mlWmaxshear"]).then(function(response) {
+        window.data["mlWmaxshear"] = response
+    })
 
     let iso_date = convertToISO(window.config["datetime"]);
     document.getElementById('date-input').value = iso_date
@@ -41,6 +44,7 @@ get_config().then((config) => {
     document.getElementById('gradT-input').checked = window.config["showGradT"]
     document.getElementById('front-input').checked = window.config["showFront"]
     document.getElementById('v-input').checked = window.config["showV"]
+    document.getElementById('mlWmaxshear-input').checked = window.config["showMlWmaxshear"]
 
     const year = parseInt(window.config["datetime"].substring(0, 4));
     const month = parseInt(window.config["datetime"].substring(4, 6));
@@ -84,7 +88,7 @@ function showPoints(locations) {
         let icon = L.divIcon({className: 'location-icon', html: "<i class='fa fa-circle'></i>"});
         let marker = L.marker([lat, lng], {icon: icon})
         marker.addTo(map)
-        // nevolam window.markers.push(marker), protoze tyhle markery by mely zustat permanentne
+        window.markers.push(marker)
     })
 }
 
@@ -176,6 +180,24 @@ function showPointsV(datetime, dataMer, dataZon) {
     }
 }
 
+function showPointsMlWmaxshear(datetime, data) {
+    if (!(datetime in data.data)) {
+        showFlashAlert('Missing mlWmaxshear data for ' + datetime)
+        return
+    }
+    for (let i = 0; i < data.data[datetime].length; i++) {
+        var value = data.data[datetime][i];
+        if (value == -777) {continue}
+
+        let icon = L.divIcon({className: 'number-icon icon-above', html: `<b>${value}</b>`});
+        lat = data.locations[i][1]
+        lng = data.locations[i][0]
+        let marker = L.marker([lat, lng], {icon: icon})
+        marker.addTo(map)
+        window.markers.push(marker)
+    }
+}
+
 function convertToISO(dateStr) {
     const year = dateStr.substring(0, 4);
     const month = dateStr.substring(4, 6);
@@ -239,6 +261,7 @@ function reload() {
     window.config['showGradT'] = document.getElementById('gradT-input').checked
     window.config['showFront'] = document.getElementById('front-input').checked
     window.config['showV'] = document.getElementById('v-input').checked
+    window.config['showMlWmaxshear'] = document.getElementById('mlWmaxshear-input').checked
 
     window.markers.forEach(marker => {
         map.removeLayer(marker)
@@ -264,6 +287,12 @@ function reload() {
     if (window.config['showGradT']) { showPointsGradT(datetime, window.data["gradT"]); }
     if (window.config['showV']) { showPointsV(datetime, window.data["vMer"], window.data["vZon"]) }
     if (window.config['showFront']) { showPointsFront(datetime, window.data["front"]) }
+
+    if (window.config['showGradT'] || window.config['showV'] || window.config['showFront']) {
+        showPoints(window.locations)
+    }
+
+    if (window.config['showMlWmaxshear']) { showPointsMlWmaxshear(datetime, window.data["mlWmaxshear"]) }
 
     let datetimeDisplayEle = document.getElementById('datetime-display')
     prettyDatetime = `${day}.${month}.${year} ${hour}h`

@@ -4,9 +4,11 @@
         "gradT": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/gradT.csv",
         "vMer": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vMer.csv",
         "vZon": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vZon.csv",
-        "front": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv"
+        "front": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv",
+        "mlWmaxshear": "data/ml_wmaxshear.csv"
     },
     "showGradT": true,
     "showV": true,
-    "showFront": false
+    "showFront": false,
+    "showMlWmaxshear": false
 }

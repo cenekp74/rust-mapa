@@ -12,11 +12,13 @@ const DEFAULT_CONFIG: &str = r#"{
         "gradT": "data/gradT.csv",
         "vMer": "data/vMer.csv",
         "vZon": "data/vZon.csv",
-        "front": "data/fronta.csv"
+        "front": "data/fronta.csv",
+        "mlWmaxshear": "data/ml_wmaxshear.csv"
     },
     "showGradT": true,
     "showV": true,
-    "showFront": false
+    "showFront": false,
+    "showMlWmaxshear": false
 }"#;
 
 #[tauri::command]
