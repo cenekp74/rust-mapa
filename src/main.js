@@ -9,8 +9,9 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 const squareRadiusMeters = 100000;
 
-window.datetime = '2023082800'
-window.filenames = {
+window.config = {}
+window.config["datetime"] = '2023082800'
+window.config['filenames'] = {
     "gradT": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/gradT.csv',
     "vMer": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vMer.csv', // merizonalni rychlost
     "vZon": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vZon.csv', // zonalni rychlost
@@ -19,22 +20,20 @@ window.filenames = {
 window.data = {}
 window.markers = []
 
-window.config = {}
-
-get_data(window.filenames["gradT"]).then(function(response) {
+get_data(window.config['filenames']["gradT"]).then(function(response) {
     window.data["gradT"] = response
     window.locations = response["locations"]
     showPoints(window.locations)
-    showPointsGradT(window.datetime, window.data["gradT"])
+    showPointsGradT(window.config['datetime'], window.data["gradT"])
 })
-get_data(window.filenames["front"]).then(function(response) {
+get_data(window.config['filenames']["front"]).then(function(response) {
     window.data["front"] = response
 })
-get_data(window.filenames["vMer"]).then(function(response) {
+get_data(window.config['filenames']["vMer"]).then(function(response) {
     window.data["vMer"] = response
-    get_data(window.filenames["vZon"]).then(function(response) {
+    get_data(window.config['filenames']["vZon"]).then(function(response) {
         window.data["vZon"] = response
-        showPointsV(window.datetime, window.data['vMer'], window.data['vZon'])
+        showPointsV(window.config['datetime'], window.data['vMer'], window.data['vZon'])
     })
 })
 
@@ -164,7 +163,7 @@ document.getElementById('reload-button').addEventListener('click', e => {
         return
     }
 
-    window.datetime = datetime
+    window.config['datetime'] = datetime
 
     if (window.config['showGradT']) { showPointsGradT(datetime, window.data["gradT"]); }
     if (window.config['showV']) { showPointsV(datetime, window.data["vMer"], window.data["vZon"]) }
