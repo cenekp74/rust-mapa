@@ -195,6 +195,11 @@ function showPointsMlWmaxshear(datetime, data) {
         let marker = L.marker([lat, lng], {icon: icon})
         marker.addTo(map)
         window.markers.push(marker)
+
+        let icon2 = L.divIcon({className: 'location-icon', html: "<i class='fa fa-circle'></i>"});
+        let marker2 = L.marker([lat, lng], {icon: icon2})
+        marker2.addTo(map)
+        window.markers.push(marker2)
     }
 }
 
