@@ -9,10 +9,10 @@ use serde::Serialize;
 const DEFAULT_CONFIG: &str = r#"{
     "datetime": "2023082800",
     "filenames": {
-        "gradT": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/gradT.csv",
-        "vMer": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vMer.csv",
-        "vZon": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vZon.csv",
-        "front": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv"
+        "gradT": "data/gradT.csv",
+        "vMer": "data/vMer.csv",
+        "vZon": "data/vZon.csv",
+        "front": "data/fronta.csv"
     },
     "showGradT": true,
     "showV": true,
@@ -33,6 +33,7 @@ fn get_config() -> String {
     let config_str_result = load_config("config.json");
     let config_str: String = match config_str_result {
         Err(_) => {
+            let _ = write_config("config.json", DEFAULT_CONFIG);
             String::from(DEFAULT_CONFIG)
         }
         Ok(conf) => {conf}

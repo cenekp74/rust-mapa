@@ -33,16 +33,6 @@ get_config().then((config) => {
     })
 })
 
-// window.config = {}
-// window.config["datetime"] = '2023082800'
-// window.config['filenames'] = {
-//     "gradT": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/gradT.csv',
-//     "vMer": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vMer.csv', // merizonalni rychlost
-//     "vZon": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vZon.csv', // zonalni rychlost
-//     "front": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv', // fronta - studena nebo tepla
-// }
-
-
 const zeroPad = (num, places) => String(num).padStart(places, '0')
 
 function calcAngleDegrees(x, y) {
