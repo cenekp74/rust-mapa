@@ -40,6 +40,14 @@ get_config().then((config) => {
     document.getElementById('gradT-input').checked = window.config["showGradT"]
     document.getElementById('front-input').checked = window.config["showFront"]
     document.getElementById('v-input').checked = window.config["showV"]
+
+    const year = parseInt(window.config["datetime"].substring(0, 4));
+    const month = parseInt(window.config["datetime"].substring(4, 6));
+    const day = parseInt(window.config["datetime"].substring(6, 8));
+
+    let datetimeDisplayEle = document.getElementById('datetime-display')
+    prettyDatetime = `${day}.${month}.${year} ${hour}h`
+    datetimeDisplayEle.innerText = prettyDatetime
 })
 
 const zeroPad = (num, places) => String(num).padStart(places, '0')
@@ -47,6 +55,26 @@ const zeroPad = (num, places) => String(num).padStart(places, '0')
 function calcAngleDegrees(x, y) {
     return (Math.atan2(y, x) * 180) / Math.PI;
 }
+
+// #region flashalert
+function createElementFromHTML(htmlString) {
+    let div = document.createElement('div');
+    div.innerHTML = htmlString.trim();
+    return div.firstChild;
+}
+
+function setParentDisplayNone(element) {
+    element.parentNode.style.display = 'none';
+}
+
+function showFlashAlert(message, category='') {
+    let eleString = `<div class="alert alert-${category}">
+            ${message} <i onclick="setParentDisplayNone(this)" class="fa fa-xmark"></i>
+        </div>`
+    let ele = createElementFromHTML(eleString)
+    document.body.insertBefore(ele, document.body.firstChild)
+}
+// #endregion flashalert
 
 function showPoints(locations) {
     locations.forEach(location => {
@@ -60,6 +88,10 @@ function showPoints(locations) {
 }
 
 function showPointsGradT(datetime, data) {
+    if (!(datetime in data.data)) {
+        showFlashAlert('Missing gradT data for ' + datetime)
+        return
+    }
     for (let i = 0; i < data.data[datetime].length; i++) {
         var value = data.data[datetime][i]; 
         let color = '#fff';
@@ -90,6 +122,10 @@ function showPointsGradT(datetime, data) {
 
 // ukazuje -1 pro teplou a 1 pro studenou frontu - obsolete
 function showPointsFront(datetime, data) {
+    if (!(datetime in data.data)) {
+        showFlashAlert('Missing front data for ' + datetime)
+        return
+    }
     for (let i = 0; i < data.data[datetime].length; i++) {
         var value = data.data[datetime][i];
         if (value == -777) {continue}
@@ -107,6 +143,14 @@ function showPointsFront(datetime, data) {
 }
 
 function showPointsV(datetime, dataMer, dataZon) {
+    if (!(datetime in dataMer.data)) {
+        showFlashAlert('Missing v data (vMer) for ' + datetime)
+        return
+    }
+    if (!(datetime in dataZon.data)) {
+        showFlashAlert('Missing v data (vZon) for ' + datetime)
+        return
+    }
     for (let i = 0; i < dataMer.data[datetime].length; i++) {
         var vMer = dataMer.data[datetime][i];
         var vZon = dataZon.data[datetime][i];

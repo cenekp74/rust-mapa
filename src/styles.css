@@ -64,3 +64,24 @@ body {
     justify-content: space-between;
     width: 100%;
 }
+
+.alert {
+    background-color: #9dbcd3;
+    border-radius: 10px;
+    line-height: 2rem;
+    min-width: 50%;
+    text-align: center;
+    margin-top: .3rem;
+    font-style: italic;
+    text-indent: 3px;
+    margin-bottom: .3rem;
+}
+
+.alert i {
+    float: right;
+    line-height: 2rem;
+    margin-right: 5px;
+    cursor: pointer;
+    padding-right: 2px;
+    padding-left: 3px;
+}
