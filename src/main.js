@@ -11,13 +11,15 @@ const squareRadiusMeters = 100000;
 
 window.datetime = '2023082800'
 window.filenames = {
-    "gradT": 'data/gradT.csv',
-    "vMer": 'data/vMer.csv', // merizonalni rychlost
-    "vZon": 'data/vZon.csv', // zonalni rychlost
-    "front": 'data/fronta.csv', // fronta - studena nebo tepla
+    "gradT": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/gradT.csv',
+    "vMer": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vMer.csv', // merizonalni rychlost
+    "vZon": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vZon.csv', // zonalni rychlost
+    "front": 'C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv', // fronta - studena nebo tepla
 }
 window.data = {}
 window.markers = []
+
+window.config = {}
 
 get_data(window.filenames["gradT"]).then(function(response) {
     window.data["gradT"] = response
@@ -88,7 +90,7 @@ function showPointsFront(datetime, data) {
         var value = data.data[datetime][i];
         if (value == -777) {continue}
         let color = '#ff0000';
-        if (value == 1) {
+        if (value == -1) {
             color = '#0000ff';
         }
         let icon = L.divIcon({className: 'number-icon icon-above', html: `<b style='color: ${color}'>${value}</b>`});
@@ -139,6 +141,10 @@ async function get_data(filename) {
 }
 
 document.getElementById('reload-button').addEventListener('click', e => {
+    window.config['showGradT'] = document.getElementById('gradT-input').checked
+    window.config['showFront'] = document.getElementById('front-input').checked
+    window.config['showV'] = document.getElementById('v-input').checked
+
     window.markers.forEach(marker => {
         map.removeLayer(marker)
     })
@@ -159,8 +165,10 @@ document.getElementById('reload-button').addEventListener('click', e => {
     }
 
     window.datetime = datetime
-    showPointsGradT(datetime, window.data["gradT"]);
-    showPointsV(datetime, window.data["vMer"], window.data["vZon"])
+
+    if (window.config['showGradT']) { showPointsGradT(datetime, window.data["gradT"]); }
+    if (window.config['showV']) { showPointsV(datetime, window.data["vMer"], window.data["vZon"]) }
+    if (window.config['showFront']) { showPointsFront(datetime, window.data["front"]) }
 
     let datetimeDisplayEle = document.getElementById('datetime-display')
     prettyDatetime = `${day}.${month}.${year} ${hour}h`

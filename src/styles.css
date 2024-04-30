@@ -3,7 +3,7 @@ body {
 }
 
 #map {
-    height: 800px;
+    height: 600px;
 }
 
 .number-icon {
@@ -50,4 +50,17 @@ body {
 .arrow-icon i {
     transform-origin: left;
     transform: translateX(calc(var(--current-zoom) * 1px - 1px)) rotate(var(--rotate));
+}
+
+.options-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+    width: max-content;
+}
+
+.options-container div {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
 }
