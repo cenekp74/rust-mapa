@@ -18,8 +18,6 @@ get_config().then((config) => {
         window.data["gradT"] = response
         if (!(response)) { showFlashAlert('No gradT data - unable to show locations') }
         window.locations = response["locations"]
-        showPoints(window.locations)
-        showPointsGradT(window.config['datetime'], window.data["gradT"])
     })
     get_data(window.config['filenames']["front"]).then(function(response) {
         window.data["front"] = response
@@ -28,7 +26,6 @@ get_config().then((config) => {
         window.data["vMer"] = response
         get_data(window.config['filenames']["vZon"]).then(function(response) {
             window.data["vZon"] = response
-            showPointsV(window.config['datetime'], window.data['vMer'], window.data['vZon'])
         })
     })
     get_data(window.config['filenames']["mlWmaxshear"]).then(function(response) {
@@ -45,14 +42,6 @@ get_config().then((config) => {
     document.getElementById('front-input').checked = window.config["showFront"]
     document.getElementById('v-input').checked = window.config["showV"]
     document.getElementById('mlWmaxshear-input').checked = window.config["showMlWmaxshear"]
-
-    const year = parseInt(window.config["datetime"].substring(0, 4));
-    const month = parseInt(window.config["datetime"].substring(4, 6));
-    const day = parseInt(window.config["datetime"].substring(6, 8));
-
-    let datetimeDisplayEle = document.getElementById('datetime-display')
-    prettyDatetime = `${day}.${month}.${year} ${hour}h`
-    datetimeDisplayEle.innerText = prettyDatetime
 })
 
 const zeroPad = (num, places) => String(num).padStart(places, '0')
