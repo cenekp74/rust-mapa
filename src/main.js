@@ -16,6 +16,7 @@ get_config().then((config) => {
 
     get_data(window.config['filenames']["gradT"]).then(function(response) {
         window.data["gradT"] = response
+        if (!(response)) { showFlashAlert('No gradT data - unable to show locations') }
         window.locations = response["locations"]
         showPoints(window.locations)
         showPointsGradT(window.config['datetime'], window.data["gradT"])
@@ -215,6 +216,10 @@ async function get_data(filename) {
         .then((response) => {
             return response;
         })
+    if (response == 'Data loading failed') {
+        showFlashAlert('data loading failed - ' + filename)
+        return
+    }
     return JSON.parse(response)
 }
 
