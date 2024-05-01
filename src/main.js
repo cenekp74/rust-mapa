@@ -7,9 +7,6 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-const squareRadiusMeters = 100000;
-const circleRadiusMeters = 100000;
-
 get_config().then((config) => {
     window.config = config
     window.data = {}
@@ -105,7 +102,7 @@ function showPointsGradT(datetime, data) {
         let icon = L.divIcon({className: 'number-icon icon-under', html: "<b>" + parseFloat(value).toFixed(2) + "</b>"});
         lat = data.locations[i][1]
         lng = data.locations[i][0]
-        let bounds = L.latLng(lat, lng).toBounds(squareRadiusMeters); 
+        let bounds = L.latLng(lat, lng).toBounds(window.config["gradTSquareRadius"]); 
         let rect = L.rectangle(bounds, {color: color, weight: 0, fillOpacity: .6});
         rect.addTo(map)
         window.markers.push(rect)
@@ -191,7 +188,7 @@ function showPointsMlWmaxshear(datetime, data) {
         marker2.addTo(map)
         window.markers.push(marker2)
 
-        let marker3 = L.circle([lat,lng], circleRadiusMeters, {weight: 1, fillOpacity: .4});
+        let marker3 = L.circle([lat,lng], window.config["mlWmaxshearCircleRadius"], {weight: 1, fillOpacity: .4});
         marker3.addTo(map)
         window.markers.push(marker3)
     }

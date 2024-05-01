@@ -7,8 +7,10 @@
         "front": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/fronta.csv",
         "mlWmaxshear": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/ml_wmaxshear.csv"
     },
-    "showGradT": true,
+    "showGradT": false,
     "showV": false,
     "showFront": false,
-    "showMlWmaxshear": true
+    "showMlWmaxshear": true,
+    "gradTSquareRadius": 100000,
+    "mlWmaxshearCircleRadius": 50000
 }

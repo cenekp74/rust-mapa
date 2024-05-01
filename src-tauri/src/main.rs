@@ -19,7 +19,9 @@ const DEFAULT_CONFIG: &str = r#"{
     "showGradT": true,
     "showV": true,
     "showFront": false,
-    "showMlWmaxshear": false
+    "showMlWmaxshear": false,
+    "gradTSquareRadius": 100000,
+    "mlWmaxshearCircleRadius": 100000
 }"#;
 
 #[tauri::command]
