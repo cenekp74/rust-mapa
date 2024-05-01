@@ -5,6 +5,7 @@ use core::f32;
 use std::collections::HashMap;
 use std::fs;
 use serde::Serialize;
+use open;
 
 const DEFAULT_CONFIG: &str = r#"{
     "datetime": "2023082800",
@@ -52,9 +53,15 @@ fn set_config(config_str: &str) -> String {
     String::from("error writing config")
 }
 
+#[tauri::command]
+fn launch_config() -> String {
+    let _ = open::that("config.json");
+    return String::from("");
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![get_data, get_config, set_config])
+        .invoke_handler(tauri::generate_handler![get_data, get_config, set_config, launch_config])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

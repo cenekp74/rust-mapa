@@ -256,6 +256,10 @@ async function set_config(configStr) {
     response = await invoke('set_config', {configStr:configStr})
 }
 
+async function launch_config() {
+    await invoke('launch_config')
+}
+ 
 function reload() {
     window.config['showGradT'] = document.getElementById('gradT-input').checked
     window.config['showFront'] = document.getElementById('front-input').checked
