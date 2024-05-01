@@ -20,22 +20,26 @@
         <br>
         <b id="datetime-display">---</b>
         <div>
-            <input id="date-input" type="date">
-            <select id="time-select">
-                <option value="00">0h</option>
-                <option value="03">3h</option>
-                <option value="06">6h</option>
-                <option value="09">9h</option>
-                <option value="12">12h</option>
-                <option value="15">15h</option>
-                <option value="18">18h</option>
-                <option value="21">21h</option>
-            </select>
-            <button onclick="back()"><</button>
-            <button onclick="forw()">></button>
-            <button id="reload-button">SHOW</button>
-            <button onclick="location.reload()">RESTART</button>
-            <button onclick="launch_config()">CONFIG</button>
+            <div>
+                <input id="date-input" type="date">
+                <select id="time-select">
+                    <option value="00">0h</option>
+                    <option value="03">3h</option>
+                    <option value="06">6h</option>
+                    <option value="09">9h</option>
+                    <option value="12">12h</option>
+                    <option value="15">15h</option>
+                    <option value="18">18h</option>
+                    <option value="21">21h</option>
+                </select>
+                <button onclick="back()"><</button>
+                <button onclick="forw()">></button>
+            </div>
+            <div style="margin-top: .2rem;">
+                <button id="reload-button">SHOW</button>
+                <button onclick="location.reload()">RESTART</button>
+                <button onclick="launch_config()">CONFIG</button>
+            </div>
             <div class="options-container">
                 <div>
                     <label>gradT</label>
