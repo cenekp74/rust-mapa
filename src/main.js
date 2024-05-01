@@ -258,6 +258,7 @@ async function launch_config() {
 }
  
 function reload() {
+    document.getElementById('scale').style.visibility = 'hidden'
     window.config['showGradT'] = document.getElementById('gradT-input').checked
     window.config['showFront'] = document.getElementById('front-input').checked
     window.config['showV'] = document.getElementById('v-input').checked
@@ -284,7 +285,10 @@ function reload() {
 
     window.config['datetime'] = datetime
 
-    if (window.config['showGradT']) { showPointsGradT(datetime, window.data["gradT"]); }
+    if (window.config['showGradT']) {
+        showPointsGradT(datetime, window.data["gradT"]);
+        document.getElementById('scale').style.visibility = 'visible'
+    }
     if (window.config['showV']) { showPointsV(datetime, window.data["vMer"], window.data["vZon"]) }
     if (window.config['showFront']) { showPointsFront(datetime, window.data["front"]) }
 

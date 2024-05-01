@@ -65,6 +65,18 @@ body {
     width: 100%;
 }
 
+#scale {
+    position: absolute;
+    bottom: 0px;
+    width: 250px;
+    z-index: 99999;
+    background-color: #ffffffaa;
+    border-top: 1px solid white;
+    border-right: 1px solid white;
+    border-top-right-radius: 5px;
+    visibility: hidden;
+}
+
 .alert {
     background-color: #9dbcd3;
     border-radius: 10px;
