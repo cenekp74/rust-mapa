@@ -1643,7 +1643,7 @@ dependencies = [
 
 [[package]]
 name = "oa-map"
-version = "0.0.2"
+version = "0.0.3"
 dependencies = [
  "open 5.1.2",
  "serde",
