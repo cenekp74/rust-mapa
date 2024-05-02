@@ -149,7 +149,7 @@ function showPointsV(datetime, dataMer, dataZon) {
         if (vMer == -777) {continue}
         if (vZon == -777) {continue}
 
-        let angleDeg = calcAngleDegrees(vZon, vMer)
+        let angleDeg = calcAngleDegrees(vZon, -vMer)
         let length = Math.sqrt(vZon**2 + vMer**2)
         
         let color = 'black'
