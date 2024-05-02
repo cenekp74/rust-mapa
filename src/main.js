@@ -30,6 +30,8 @@ get_config().then((config) => {
         window.data["mlWmaxshear"] = response
     })
 
+    document.body.style.setProperty('--arrow-size', window.config["arrowSize"])
+
     let iso_date = convertToISO(window.config["datetime"]);
     document.getElementById('date-input').value = iso_date
 

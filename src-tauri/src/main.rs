@@ -21,7 +21,8 @@ const DEFAULT_CONFIG: &str = r#"{
     "showFront": false,
     "showMlWmaxshear": false,
     "gradTSquareRadius": 100000,
-    "mlWmaxshearCircleRadius": 100000
+    "mlWmaxshearCircleRadius": 100000,
+    "arrowSize": 2
 }"#;
 
 #[tauri::command]

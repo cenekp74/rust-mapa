@@ -1,5 +1,5 @@
 {
-    "datetime": "2023083012",
+    "datetime": "2023083112",
     "filenames": {
         "gradT": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/gradT.csv",
         "vMer": "C:/Users/potuz/Desktop/UFA/kaca/rust-mapa/data/vMer.csv",
@@ -12,5 +12,6 @@
     "showFront": false,
     "showMlWmaxshear": false,
     "gradTSquareRadius": 100000,
-    "mlWmaxshearCircleRadius": 50000
+    "mlWmaxshearCircleRadius": 50000,
+    "arrowSize": 1.5
 }
