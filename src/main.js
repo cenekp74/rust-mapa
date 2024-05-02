@@ -84,8 +84,14 @@ function showPointsGradT(datetime, data) {
         showFlashAlert('Missing gradT data for ' + datetime)
         return
     }
+    let maxGradT = 0;
+    let maxGradTLoc;
     for (let i = 0; i < data.data[datetime].length; i++) {
         var value = data.data[datetime][i]; 
+        if (value>maxGradT) {
+            maxGradT = value;
+            maxGradTLoc = data.locations[i];
+        }
         let color = '#fff';
         if (value > 1) {
             color = '#fff2cc'
@@ -110,6 +116,8 @@ function showPointsGradT(datetime, data) {
         marker.addTo(map)
         window.markers.push(marker)
     }
+    maxGradT = maxGradT.toFixed(2);
+    document.getElementById('maxGradT').innerHTML = `Max GradT: <b>${maxGradT}</b> (${maxGradTLoc[0]}, ${maxGradTLoc[1]})`
 }
 
 // ukazuje -1 pro teplou a 1 pro studenou frontu - obsolete
@@ -259,6 +267,7 @@ async function launch_config() {
  
 function reload() {
     document.getElementById('scale').style.visibility = 'hidden'
+    document.getElementById('maxGradT').style.visibility = 'hidden'
     window.config['showGradT'] = document.getElementById('gradT-input').checked
     window.config['showFront'] = document.getElementById('front-input').checked
     window.config['showV'] = document.getElementById('v-input').checked
@@ -288,6 +297,7 @@ function reload() {
     if (window.config['showGradT']) {
         showPointsGradT(datetime, window.data["gradT"]);
         document.getElementById('scale').style.visibility = 'visible'
+        document.getElementById('maxGradT').style.visibility = 'visible'
     }
     if (window.config['showV']) { showPointsV(datetime, window.data["vMer"], window.data["vZon"]) }
     if (window.config['showFront']) { showPointsFront(datetime, window.data["front"]) }
