@@ -15,6 +15,8 @@ def get_row_dict(datetime, df):
     row_dict = row.to_dict(as_series=False)
     row_dict.pop(DATETIME_COLUMN_NAME, None)
     row_dict = {key: row_dict[key][0] for key in row_dict}
+    row_dict = {tuple(key.replace('[', '').replace(']', '').split(';')): value for key, value in row_dict.items()} # prevede points na format (str, str)
+    row_dict = {(float(key[0]), float(key[1])): value for key, value in row_dict.items()} # prevede points na format (float, float) (stejny jako je v const POINTS)
     return row_dict
 
 def get_adjacent_points(point: tuple[float, float], all_points: list = POINTS):
@@ -28,9 +30,7 @@ def main():
     datetime = 2023081512
     front_df = pl.read_csv('data/fronta.csv')
     row_dict = get_row_dict(datetime, front_df)
-
     adjacent_points = list(get_adjacent_points((11.5, 51.5)))
-    print(adjacent_points)
 
 if __name__ == '__main__':
     main()
