@@ -5,14 +5,17 @@
 
 import polars as pl
 from icecream import ic
+import datetime
+import copy
 
 DATETIME_COLUMN_NAME = 'Datum_[rrrrmmddHH]'
 POINTS = [(10.0, 47.0), (10.0, 48.5), (10.0, 50.0), (10.0, 51.5), (10.0, 53.0), (11.5, 47.0), (11.5, 48.5), (11.5, 50.0), (11.5, 51.5), (11.5, 53.0), (13.0, 47.0), (13.0, 48.5), (13.0, 50.0), (13.0, 51.5), (13.0, 53.0), (14.5, 47.0), (14.5, 48.5), (14.5, 50.0), (14.5, 51.5), (14.5, 53.0), (16.0, 47.0), (16.0, 48.5), (16.0, 50.0), (16.0, 51.5), (16.0, 53.0), (17.5, 47.0), (17.5, 48.5), (17.5, 50.0), (17.5, 51.5), (17.5, 53.0), (19.0, 47.0), (19.0, 48.5), (19.0, 50.0), (19.0, 51.5), (19.0, 53.0)]
 
 # funkce pro ziskani dict z radku zacinajiciho danym datetimem
-def get_row_dict(datetime, df):
-    datetime = int(datetime)
-    row = df.filter(pl.col(DATETIME_COLUMN_NAME)==datetime)
+def get_row_dict(dt, df):
+    dt = int(dt)
+    row = df.filter(pl.col(DATETIME_COLUMN_NAME)==dt)
+    if row.is_empty(): return None
     row_dict = row.to_dict(as_series=False)
     row_dict.pop(DATETIME_COLUMN_NAME, None)
     row_dict = {key: row_dict[key][0] for key in row_dict}
@@ -41,9 +44,9 @@ def find_fronts(row_dict) -> list[list[tuple]]:
     for point, value in row_dict.items():
         if value != -1: continue # zajimaji me jenom studene fronty a ty jsou oznacene hodnotou -1
         if point in all_front_points: continue
-        front_points = find_front_points(point)
+        front_points = find_front_points(point, front_points=[]) # z nejakyho duvodu se to posere kdyz sem nedam front_points=[]
         all_front_points.update(front_points)
-        if len(front_points) > 2:
+        if len(front_points) >= 2 and front_points not in fronts:
             fronts.append(front_points)
     return fronts
 
@@ -72,20 +75,32 @@ def find_max_grad_t(row_dict_grad_t, front) -> tuple[tuple, float]:
     grad_t_list = sorted(grad_t_list, key=lambda x: x[1], reverse=True)
     return grad_t_list[0]
 
+def generate_datetimes(year):
+    start_date = datetime.datetime(year, 1, 1, 0)
+    datetimes_list = []
+    current_date = start_date
+    end_date = datetime.datetime(year+1, 1, 1, 0)
+    while current_date < end_date:
+        formatted_date = current_date.strftime('%Y%m%d%H')
+        datetimes_list.append(formatted_date)
+        current_date += datetime.timedelta(hours=12)
+    return datetimes_list
+
 def main():
-    datetime = 2023081500
     front_df = pl.read_csv('data/fronta.csv')
-    row_dict_front = get_row_dict(datetime, front_df)
-
-    fronts = find_fronts(row_dict_front)
-
     mer_df, zon_df = pl.read_csv('data/vMer.csv'), pl.read_csv('data/vZon.csv')
-    row_dict_mer, row_dict_zon = get_row_dict(datetime, mer_df), get_row_dict(datetime, zon_df)
-    ic(calculate_front_vector(row_dict_mer, row_dict_zon, fronts[0]))
-
     grad_t_df = pl.read_csv('data/gradT.csv')
-    row_dict_grad_t = get_row_dict(datetime, grad_t_df)
-    ic(find_max_grad_t(row_dict_grad_t, fronts[0]))
+
+    for dt in generate_datetimes(2023):
+        row_dict_front = get_row_dict(dt, front_df)
+        row_dict_mer, row_dict_zon = get_row_dict(dt, mer_df), get_row_dict(dt, zon_df)
+        row_dict_grad_t = get_row_dict(dt, grad_t_df)
+        if not row_dict_front or not row_dict_mer or not row_dict_zon or not row_dict_grad_t: continue
+        fronts = find_fronts(row_dict_front)
+        fronts = sorted(fronts, key=lambda front: find_max_grad_t(row_dict_grad_t, front)[1], reverse=True) # seradim je podle nejvyssi hodnoty gradT
+        front = fronts[0]
+        max_grad_t = find_max_grad_t(row_dict_grad_t, front)
+        front_vector = calculate_front_vector(row_dict_mer, row_dict_zon, front)
 
 if __name__ == '__main__':
     main()
