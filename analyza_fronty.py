@@ -60,6 +60,18 @@ def calculate_front_vector(row_dict_mer, row_dict_zon, front: list[tuple]):
     
     return sum(mer_v_list)/len(mer_v_list), sum(zon_v_list)/len(zon_v_list)
 
+# funkce na nalezeni maximalniho gradT v bodech fronty a bodech v sousednich bodech
+def find_max_grad_t(row_dict_grad_t, front) -> tuple[tuple, float]:
+    grad_t_list = [] # list gradT hodnot ve formatu [(stanice, hodnota)]
+    for point, value in row_dict_grad_t.items():
+        if point not in front: continue
+        grad_t_list.append((point, value))
+        for point2 in get_adjacent_points(point):
+            value = row_dict_grad_t[point2]
+            grad_t_list.append((point2, value))
+    grad_t_list = sorted(grad_t_list, key=lambda x: x[1], reverse=True)
+    return grad_t_list[0]
+
 def main():
     datetime = 2023081500
     front_df = pl.read_csv('data/fronta.csv')
@@ -70,6 +82,10 @@ def main():
     mer_df, zon_df = pl.read_csv('data/vMer.csv'), pl.read_csv('data/vZon.csv')
     row_dict_mer, row_dict_zon = get_row_dict(datetime, mer_df), get_row_dict(datetime, zon_df)
     ic(calculate_front_vector(row_dict_mer, row_dict_zon, fronts[0]))
+
+    grad_t_df = pl.read_csv('data/gradT.csv')
+    row_dict_grad_t = get_row_dict(datetime, grad_t_df)
+    ic(find_max_grad_t(row_dict_grad_t, fronts[0]))
 
 if __name__ == '__main__':
     main()
