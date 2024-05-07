@@ -1,4 +1,4 @@
-# script na analyzu fronty. pro dane datum zjisti, jestli je studena fronta (teplou ignoruju) alespon ve dvou gridovych bodech vedle sebe. pokud ano, udela vektorovy soucet rychlosti a smeru fronty.
+# script na analyzu fronty. pro dane datum zjisti, jestli je studena fronta (teplou ignoruju) alespon ve dvou gridovych bodech vedle sebe. pokud ano, udela prumer vektoru rychlosti a smeru fronty.
 # potom z bodu fronty a bodu s nimi sousedicimi ziska maximalni hodnotu gradT. vystup je tabulka ve formatu "datetime   smer    rychlost    maxGradt"
 # pokud je v dany datetime vic jak jedna SF, do vystupu jde ta s vyssi hodnotou maxGradT
 # WIP
@@ -47,12 +47,29 @@ def find_fronts(row_dict) -> list[list[tuple]]:
             fronts.append(front_points)
     return fronts
 
+def calculate_front_vector(row_dict_mer, row_dict_zon, front: list[tuple]):
+    mer_v_list = [] # list mer rychlosti vsech bodu
+    zon_v_list = []
+
+    for point, value in row_dict_mer.items():
+        if point not in front: continue
+        mer_v_list.append(value)
+    for point, value in row_dict_zon.items():
+        if point not in front: continue
+        zon_v_list.append(value)
+    
+    return sum(mer_v_list)/len(mer_v_list), sum(zon_v_list)/len(zon_v_list)
+
 def main():
     datetime = 2023081500
     front_df = pl.read_csv('data/fronta.csv')
-    row_dict = get_row_dict(datetime, front_df)
+    row_dict_front = get_row_dict(datetime, front_df)
 
-    ic(find_fronts(row_dict))
+    fronts = find_fronts(row_dict_front)
+
+    mer_df, zon_df = pl.read_csv('data/vMer.csv'), pl.read_csv('data/vZon.csv')
+    row_dict_mer, row_dict_zon = get_row_dict(datetime, mer_df), get_row_dict(datetime, zon_df)
+    ic(calculate_front_vector(row_dict_mer, row_dict_zon, fronts[0]))
 
 if __name__ == '__main__':
     main()
