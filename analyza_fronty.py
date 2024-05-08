@@ -6,10 +6,11 @@
 import polars as pl
 from icecream import ic
 import datetime
-import copy
+import math
 
 DATETIME_COLUMN_NAME = 'Datum_[rrrrmmddHH]'
 POINTS = [(10.0, 47.0), (10.0, 48.5), (10.0, 50.0), (10.0, 51.5), (10.0, 53.0), (11.5, 47.0), (11.5, 48.5), (11.5, 50.0), (11.5, 51.5), (11.5, 53.0), (13.0, 47.0), (13.0, 48.5), (13.0, 50.0), (13.0, 51.5), (13.0, 53.0), (14.5, 47.0), (14.5, 48.5), (14.5, 50.0), (14.5, 51.5), (14.5, 53.0), (16.0, 47.0), (16.0, 48.5), (16.0, 50.0), (16.0, 51.5), (16.0, 53.0), (17.5, 47.0), (17.5, 48.5), (17.5, 50.0), (17.5, 51.5), (17.5, 53.0), (19.0, 47.0), (19.0, 48.5), (19.0, 50.0), (19.0, 51.5), (19.0, 53.0)]
+HEADER = 'datetime,v_mer,v_zon,v,max_gradT (station)'
 
 # funkce pro ziskani dict z radku zacinajiciho danym datetimem
 def get_row_dict(dt, df):
@@ -91,16 +92,25 @@ def main():
     mer_df, zon_df = pl.read_csv('data/vMer.csv'), pl.read_csv('data/vZon.csv')
     grad_t_df = pl.read_csv('data/gradT.csv')
 
-    for dt in generate_datetimes(2023):
-        row_dict_front = get_row_dict(dt, front_df)
-        row_dict_mer, row_dict_zon = get_row_dict(dt, mer_df), get_row_dict(dt, zon_df)
-        row_dict_grad_t = get_row_dict(dt, grad_t_df)
-        if not row_dict_front or not row_dict_mer or not row_dict_zon or not row_dict_grad_t: continue
-        fronts = find_fronts(row_dict_front)
-        fronts = sorted(fronts, key=lambda front: find_max_grad_t(row_dict_grad_t, front)[1], reverse=True) # seradim je podle nejvyssi hodnoty gradT
-        front = fronts[0]
-        max_grad_t = find_max_grad_t(row_dict_grad_t, front)
-        front_vector = calculate_front_vector(row_dict_mer, row_dict_zon, front)
+    with open('analyza_fronty_2023.csv', 'w') as f:
+        f.write(HEADER)
+        f.write('\n')
+        for dt in generate_datetimes(2023):
+            row_dict_front = get_row_dict(dt, front_df)
+            row_dict_mer, row_dict_zon = get_row_dict(dt, mer_df), get_row_dict(dt, zon_df)
+            row_dict_grad_t = get_row_dict(dt, grad_t_df)
+            if not row_dict_front or not row_dict_mer or not row_dict_zon or not row_dict_grad_t: continue
+            fronts = find_fronts(row_dict_front)
+            if not fronts: continue
+            fronts = sorted(fronts, key=lambda front: find_max_grad_t(row_dict_grad_t, front)[1], reverse=True) # seradim je podle nejvyssi hodnoty gradT
+            front = fronts[0]
+            max_grad_t = find_max_grad_t(row_dict_grad_t, front)
+            front_vector = calculate_front_vector(row_dict_mer, row_dict_zon, front)
+            speed = math.sqrt(front_vector[0]**2 + front_vector[1]**2)
+            f.write(f'{dt},')
+            f.write(f'{round(front_vector[0], 2)},{round(front_vector[1], 2)},')
+            f.write(f'{round(speed, 2)},')
+            f.write(f'{str(round(max_grad_t[1], 2)).ljust(4, '0')} ({max_grad_t[0][0]};{max_grad_t[0][1]})\n')
 
 if __name__ == '__main__':
     main()
