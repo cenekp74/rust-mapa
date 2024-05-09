@@ -103,14 +103,14 @@ def main():
             fronts = find_fronts(row_dict_front)
             if not fronts: continue
             fronts = sorted(fronts, key=lambda front: find_max_grad_t(row_dict_grad_t, front)[1], reverse=True) # seradim je podle nejvyssi hodnoty gradT
-            front = fronts[0]
-            max_grad_t = find_max_grad_t(row_dict_grad_t, front)
-            front_vector = calculate_front_vector(row_dict_mer, row_dict_zon, front)
-            speed = math.sqrt(front_vector[0]**2 + front_vector[1]**2)
-            f.write(f'{dt},')
-            f.write(f'{round(front_vector[0], 2)},{round(front_vector[1], 2)},')
-            f.write(f'{round(speed, 2)},')
-            f.write(f'{str(round(max_grad_t[1], 2)).ljust(4, '0')} ({max_grad_t[0][0]};{max_grad_t[0][1]})\n')
+            for front in fronts:
+                max_grad_t = find_max_grad_t(row_dict_grad_t, front)
+                front_vector = calculate_front_vector(row_dict_mer, row_dict_zon, front)
+                speed = math.sqrt(front_vector[0]**2 + front_vector[1]**2)
+                f.write(f'{dt},')
+                f.write(f'{round(front_vector[0], 2)},{round(front_vector[1], 2)},')
+                f.write(f'{round(speed, 2)},')
+                f.write(f'{str(round(max_grad_t[1], 2)).ljust(4, '0')} ({max_grad_t[0][0]};{max_grad_t[0][1]})\n')
 
 if __name__ == '__main__':
     main()
