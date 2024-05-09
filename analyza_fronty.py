@@ -1,4 +1,4 @@
-# script na analyzu fronty. pro dane datum zjisti, jestli je studena fronta (teplou ignoruju) alespon ve dvou gridovych bodech vedle sebe. pokud ano, udela prumer vektoru rychlosti a smeru fronty.
+# script na analyzu fronty. pro dane datum zjisti, jestli je fronta alespon ve dvou gridovych bodech vedle sebe. pokud ano, udela prumer vektoru rychlosti a smeru fronty.
 # potom z bodu fronty a bodu s nimi sousedicimi ziska maximalni hodnotu gradT. vystup je tabulka ve formatu "datetime   smer    rychlost    maxGradt"
 # pokud je v dany datetime vic jak jedna SF, do vystupu jde ta s vyssi hodnotou maxGradT
 # WIP
@@ -10,7 +10,7 @@ import math
 
 DATETIME_COLUMN_NAME = 'Datum_[rrrrmmddHH]'
 POINTS = [(10.0, 47.0), (10.0, 48.5), (10.0, 50.0), (10.0, 51.5), (10.0, 53.0), (11.5, 47.0), (11.5, 48.5), (11.5, 50.0), (11.5, 51.5), (11.5, 53.0), (13.0, 47.0), (13.0, 48.5), (13.0, 50.0), (13.0, 51.5), (13.0, 53.0), (14.5, 47.0), (14.5, 48.5), (14.5, 50.0), (14.5, 51.5), (14.5, 53.0), (16.0, 47.0), (16.0, 48.5), (16.0, 50.0), (16.0, 51.5), (16.0, 53.0), (17.5, 47.0), (17.5, 48.5), (17.5, 50.0), (17.5, 51.5), (17.5, 53.0), (19.0, 47.0), (19.0, 48.5), (19.0, 50.0), (19.0, 51.5), (19.0, 53.0)]
-HEADER = 'datetime,v_mer,v_zon,v,max_gradT (station)'
+HEADER = 'datetime,type,v_mer,v_zon,v,max_gradT (station)'
 
 # funkce pro ziskani dict z radku zacinajiciho danym datetimem
 def get_row_dict(dt, df):
@@ -31,21 +31,21 @@ def get_adjacent_points(point: tuple[float, float], all_points: list = POINTS):
         if distance <= 4.5: # body jsou od sebe 1.5 vzdalene, takze sousedici body jsou vzdalene max 2*1.5^2=4 od sebe 
             yield point2
 
-# funkce na nalezeni vsech studenych front v datech. fronty se skladaji z bodu, ktere jsou tesne u sebe a maji hodnotu -1
+# funkce na nalezeni vsech studenych front v datech. fronty se skladaji z bodu, ktere jsou tesne u sebe a maji hodnotu -1 nebo 1
 def find_fronts(row_dict) -> list[list[tuple]]:
-    def find_front_points(point, front_points=[]): # funkce pro rekurzivni hledani front
+    def find_front_points(point, front_type: int, front_points=[]): # funkce pro rekurzivni hledani front - front type je bud -1 pro studeny nebo 1 pro teply fronty
         for point2 in get_adjacent_points(point):
             if point2 in front_points: continue
-            if row_dict[point2] == -1:
+            if row_dict[point2] == front_type:
                 front_points.append(point2)
-                front_points = find_front_points(point2, front_points=front_points)
+                front_points = find_front_points(point2, front_type, front_points=front_points)
         return front_points
     fronts = []
     all_front_points = set() # set vsech bodu co jsou soucasti nejaky fronty
     for point, value in row_dict.items():
-        if value != -1: continue # zajimaji me jenom studene fronty a ty jsou oznacene hodnotou -1
         if point in all_front_points: continue
-        front_points = find_front_points(point, front_points=[]) # z nejakyho duvodu se to posere kdyz sem nedam front_points=[]
+        if value == -777: continue
+        front_points = find_front_points(point, value, front_points=[]) # z nejakyho duvodu se to posere kdyz sem nedam front_points=[]
         all_front_points.update(front_points)
         if len(front_points) >= 2 and front_points not in fronts:
             fronts.append(front_points)
@@ -104,10 +104,12 @@ def main():
             if not fronts: continue
             fronts = sorted(fronts, key=lambda front: find_max_grad_t(row_dict_grad_t, front)[1], reverse=True) # seradim je podle nejvyssi hodnoty gradT
             for front in fronts:
+                front_type = row_dict_front[front[0]]
                 max_grad_t = find_max_grad_t(row_dict_grad_t, front)
                 front_vector = calculate_front_vector(row_dict_mer, row_dict_zon, front)
                 speed = math.sqrt(front_vector[0]**2 + front_vector[1]**2)
                 f.write(f'{dt},')
+                f.write(f'{front_type},')
                 f.write(f'{round(front_vector[0], 2)},{round(front_vector[1], 2)},')
                 f.write(f'{round(speed, 2)},')
                 f.write(f'{str(round(max_grad_t[1], 2)).ljust(4, '0')} ({max_grad_t[0][0]};{max_grad_t[0][1]})\n')
