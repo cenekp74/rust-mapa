@@ -116,7 +116,7 @@ def main():
                 speed = math.sqrt(front_vector[0]**2 + front_vector[1]**2)
                 f.write(f'{dt},')
                 f.write(f'{front_type},')
-                f.write(f'{round(calculate_angle_deg(front_vector[0], front_vector[1]), 2)},')
+                f.write(f'{round(calculate_angle_deg(front_vector[1], front_vector[0]), 2)},')
                 f.write(f'{round(speed, 2)},')
                 f.write(f'{str(round(max_grad_t[1], 2)).ljust(4, '0')} ({max_grad_t[0][0]};{max_grad_t[0][1]})\n')
 
