@@ -10,7 +10,7 @@ import math
 
 DATETIME_COLUMN_NAME = 'Datum_[rrrrmmddHH]'
 POINTS = [(10.0, 47.0), (10.0, 48.5), (10.0, 50.0), (10.0, 51.5), (10.0, 53.0), (11.5, 47.0), (11.5, 48.5), (11.5, 50.0), (11.5, 51.5), (11.5, 53.0), (13.0, 47.0), (13.0, 48.5), (13.0, 50.0), (13.0, 51.5), (13.0, 53.0), (14.5, 47.0), (14.5, 48.5), (14.5, 50.0), (14.5, 51.5), (14.5, 53.0), (16.0, 47.0), (16.0, 48.5), (16.0, 50.0), (16.0, 51.5), (16.0, 53.0), (17.5, 47.0), (17.5, 48.5), (17.5, 50.0), (17.5, 51.5), (17.5, 53.0), (19.0, 47.0), (19.0, 48.5), (19.0, 50.0), (19.0, 51.5), (19.0, 53.0)]
-HEADER = 'datetime,type,v_mer,v_zon,v,max_gradT (station)'
+HEADER = 'datetime,type,dir[deg],v[m/s],max_gradT (station)'
 
 # funkce pro ziskani dict z radku zacinajiciho danym datetimem
 def get_row_dict(dt, df):
@@ -23,6 +23,12 @@ def get_row_dict(dt, df):
     row_dict = {tuple(key.replace('[', '').replace(']', '').split(';')): value for key, value in row_dict.items()} # prevede points na format (str, str)
     row_dict = {(float(key[0]), float(key[1])): value for key, value in row_dict.items()} # prevede points na format (float, float) (stejny jako je v const POINTS)
     return row_dict
+
+def calculate_angle_deg(x, y):
+    angle = (math.atan2(x, y) * 180) / math.pi # tohle je uhel ve formatu -180 az 180, chci ho prepocitat na 0 az 360
+    if angle < 0:
+        angle = 360 + angle
+    return angle
 
 def get_adjacent_points(point: tuple[float, float], all_points: list = POINTS):
     for point2 in all_points:
@@ -110,7 +116,7 @@ def main():
                 speed = math.sqrt(front_vector[0]**2 + front_vector[1]**2)
                 f.write(f'{dt},')
                 f.write(f'{front_type},')
-                f.write(f'{round(front_vector[0], 2)},{round(front_vector[1], 2)},')
+                f.write(f'{round(calculate_angle_deg(front_vector[0], front_vector[1]), 2)},')
                 f.write(f'{round(speed, 2)},')
                 f.write(f'{str(round(max_grad_t[1], 2)).ljust(4, '0')} ({max_grad_t[0][0]};{max_grad_t[0][1]})\n')
 
