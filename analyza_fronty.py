@@ -11,6 +11,7 @@ import math
 DATETIME_COLUMN_NAME = 'Datum_[rrrrmmddHH]'
 POINTS = [(10.0, 47.0), (10.0, 48.5), (10.0, 50.0), (10.0, 51.5), (10.0, 53.0), (11.5, 47.0), (11.5, 48.5), (11.5, 50.0), (11.5, 51.5), (11.5, 53.0), (13.0, 47.0), (13.0, 48.5), (13.0, 50.0), (13.0, 51.5), (13.0, 53.0), (14.5, 47.0), (14.5, 48.5), (14.5, 50.0), (14.5, 51.5), (14.5, 53.0), (16.0, 47.0), (16.0, 48.5), (16.0, 50.0), (16.0, 51.5), (16.0, 53.0), (17.5, 47.0), (17.5, 48.5), (17.5, 50.0), (17.5, 51.5), (17.5, 53.0), (19.0, 47.0), (19.0, 48.5), (19.0, 50.0), (19.0, 51.5), (19.0, 53.0)]
 HEADER = 'datetime,type,dir[deg],v[m/s],max_gradT (station)'
+MIN_FRONT_POINTS = 1 # minimalni pocet bodu co musi byt vedle sebe aby se pocitala fronta
 
 # funkce pro ziskani dict z radku zacinajiciho danym datetimem
 def get_row_dict(dt, df):
@@ -51,9 +52,9 @@ def find_fronts(row_dict) -> list[list[tuple]]:
     for point, value in row_dict.items():
         if point in all_front_points: continue
         if value == -777: continue
-        front_points = find_front_points(point, value, front_points=[]) # z nejakyho duvodu se to posere kdyz sem nedam front_points=[]
+        front_points = find_front_points(point, value, front_points=[point]) # z nejakyho duvodu se to posere kdyz sem nedam front_points=[]
         all_front_points.update(front_points)
-        if len(front_points) >= 2 and front_points not in fronts:
+        if len(front_points) >= MIN_FRONT_POINTS and front_points not in fronts:
             fronts.append(front_points)
     return fronts
 
@@ -94,9 +95,9 @@ def generate_datetimes(year):
     return datetimes_list
 
 def main():
-    front_df = pl.read_csv('data/fronta.csv')
-    mer_df, zon_df = pl.read_csv('data/vMer.csv'), pl.read_csv('data/vZon.csv')
-    grad_t_df = pl.read_csv('data/gradT.csv')
+    front_df = pl.read_csv('data/new/prisnejsi/fronta.csv')
+    mer_df, zon_df = pl.read_csv('data/new/prisnejsi/vMer.csv'), pl.read_csv('data/new/prisnejsi/vZon.csv')
+    grad_t_df = pl.read_csv('data/new/prisnejsi/gradT.csv')
 
     with open('analyza_fronty_2023.csv', 'w') as f:
         f.write(HEADER)
