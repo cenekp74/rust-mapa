@@ -9,7 +9,7 @@ import datetime
 import math
 
 DATETIME_COLUMN_NAME = 'Datum_[rrrrmmddHH]'
-POINTS = [(10.0, 47.0), (10.0, 48.5), (10.0, 50.0), (10.0, 51.5), (10.0, 53.0), (11.5, 47.0), (11.5, 48.5), (11.5, 50.0), (11.5, 51.5), (11.5, 53.0), (13.0, 47.0), (13.0, 48.5), (13.0, 50.0), (13.0, 51.5), (13.0, 53.0), (14.5, 47.0), (14.5, 48.5), (14.5, 50.0), (14.5, 51.5), (14.5, 53.0), (16.0, 47.0), (16.0, 48.5), (16.0, 50.0), (16.0, 51.5), (16.0, 53.0), (17.5, 47.0), (17.5, 48.5), (17.5, 50.0), (17.5, 51.5), (17.5, 53.0), (19.0, 47.0), (19.0, 48.5), (19.0, 50.0), (19.0, 51.5), (19.0, 53.0)]
+POINTS = [(10.0, 48.5), (10.0, 50.0), (10.0, 51.5), (11.5, 48.5), (11.5, 50.0), (11.5, 51.5), (13.0, 48.5), (13.0, 50.0), (13.0, 51.5), (14.5, 48.5), (14.5, 50.0), (14.5, 51.5), (16.0, 48.5), (16.0, 50.0), (16.0, 51.5), (17.5, 48.5), (17.5, 50.0), (17.5, 51.5), (19.0, 48.5), (19.0, 50.0), (19.0, 51.5)]
 HEADER = 'datetime,type,dir[deg],v[m/s],max_gradT (station)'
 MIN_FRONT_POINTS = 1 # minimalni pocet bodu co musi byt vedle sebe aby se pocitala fronta
 
@@ -95,14 +95,14 @@ def generate_datetimes(year):
     return datetimes_list
 
 def main():
-    front_df = pl.read_csv('data/new/prisnejsi/fronta.csv')
-    mer_df, zon_df = pl.read_csv('data/new/prisnejsi/vMer.csv'), pl.read_csv('data/new/prisnejsi/vZon.csv')
-    grad_t_df = pl.read_csv('data/new/prisnejsi/gradT.csv')
+    front_df = pl.read_csv('data/fronta.csv')
+    mer_df, zon_df = pl.read_csv('data/vMer.csv'), pl.read_csv('data/vZon.csv')
+    grad_t_df = pl.read_csv('data/gradT.csv')
 
-    with open('analyza_fronty_2023.csv', 'w') as f:
+    with open('analyza_fronty_2015.csv', 'w') as f:
         f.write(HEADER)
         f.write('\n')
-        for dt in generate_datetimes(2023):
+        for dt in generate_datetimes(2015):
             row_dict_front = get_row_dict(dt, front_df)
             row_dict_mer, row_dict_zon = get_row_dict(dt, mer_df), get_row_dict(dt, zon_df)
             row_dict_grad_t = get_row_dict(dt, grad_t_df)
