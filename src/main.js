@@ -71,6 +71,13 @@ function showFlashAlert(message, category='') {
     let ele = createElementFromHTML(eleString)
     document.body.insertBefore(ele, document.body.firstChild)
 }
+
+function deleteAllFlashAlerts() {
+    const elements = document.querySelectorAll(".alert");
+    elements.forEach(element => {
+        element.remove();
+    });
+}
 // #endregion flashalert
 
 function showPoints(locations) {
@@ -283,6 +290,7 @@ async function launch_config() {
 }
  
 function reload() {
+    deleteAllFlashAlerts()
     document.getElementById('scale').style.visibility = 'hidden'
     document.getElementById('maxGradT').style.visibility = 'hidden'
     window.config['showGradT'] = document.getElementById('gradT-input').checked
