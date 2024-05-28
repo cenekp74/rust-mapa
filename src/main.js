@@ -122,7 +122,7 @@ function showPointsGradT(datetime, data) {
     document.getElementById('maxGradT').innerHTML = `Max GradT: <b>${maxGradT}</b> (${maxGradTLoc[0]}, ${maxGradTLoc[1]})`
 }
 
-// ukazuje -1 pro teplou a 1 pro studenou frontu - obsolete
+// ukazuje 1 pro teplou a -1 pro studenou frontu - obsolete
 function showPointsFront(datetime, data) {
     if (!(datetime in data.data)) {
         showFlashAlert('Missing front data for ' + datetime)
