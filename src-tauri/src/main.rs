@@ -14,7 +14,8 @@ const DEFAULT_CONFIG: &str = r#"{
         "vMer": "data/vMer.csv",
         "vZon": "data/vZon.csv",
         "front": "data/fronta.csv",
-        "mlWmaxshear": "data/ml_wmaxshear.csv"
+        "mlWmaxshear": "data/ml_wmaxshear.csv",
+        "jet": "data/jet.csv"
     },
     "showGradT": true,
     "showV": true,
@@ -28,6 +29,15 @@ const DEFAULT_CONFIG: &str = r#"{
 #[tauri::command]
 fn get_data(filename: &str) -> String {
     let data = load_data(filename);
+    match data {
+        Err(_) => {return String::from("Data loading failed")}, // DODELAT CORRECT ERROR MESSAGES
+        Ok(data) => {return serde_json::to_string(&data).expect("Data serializing failed")}
+    }
+}
+
+#[tauri::command]
+fn get_jet_data(filename: &str) -> String {
+    let data = load_jet_data(filename);
     match data {
         Err(_) => {return String::from("Data loading failed")}, // DODELAT CORRECT ERROR MESSAGES
         Ok(data) => {return serde_json::to_string(&data).expect("Data serializing failed")}
@@ -64,7 +74,7 @@ fn launch_config() -> String {
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![get_data, get_config, set_config, launch_config])
+        .invoke_handler(tauri::generate_handler![get_data, get_config, set_config, launch_config, get_jet_data])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -145,4 +155,27 @@ fn load_data(filename: &str) -> Result<PointData, DataLoadError> {
         point_data.data.insert(datetime, data);
     }
     Ok(point_data)
+}
+
+fn load_jet_data(filename: &str) -> Result<HashMap<String, bool>, DataLoadError> {
+    let contents_result = fs::read_to_string(filename);
+    let contents = match contents_result {
+        Err(_) => return Err(DataLoadError::FileNotFound),
+        Ok(cont) => cont.replace("\r", ""),
+    };
+    let mut jet_data = HashMap::new();
+    let lines: Vec<&str> = contents.split('\n').collect();
+
+    for line in lines {
+        let dt = line.split(';').nth(0).unwrap_or("");
+        let value = line.split(';').nth(1).unwrap_or("");
+        println!("{value}");
+        let value_bool = match value {
+            "1" => true,
+            "0" => false,
+            _ => return Err(DataLoadError::FileInvalid),
+        };
+        jet_data.insert(String::from(dt), value_bool);
+    }
+    Ok(jet_data)
 }

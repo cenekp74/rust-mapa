@@ -29,6 +29,9 @@ get_config().then((config) => {
     get_data(window.config['filenames']["mlWmaxshear"]).then(function(response) {
         window.data["mlWmaxshear"] = response
     })
+    get_jet_data(window.config['filenames']["jet"]).then(function(response) {
+        window.data["jet"] = response
+    })
 
     document.body.style.setProperty('--arrow-size', window.config["arrowSize"])
 
@@ -241,6 +244,18 @@ map.on('zoomend', function() {
 
 async function get_data(filename) {
     response = await invoke('get_data', {filename:filename})
+        .then((response) => {
+            return response;
+        })
+    if (response == 'Data loading failed') {
+        showFlashAlert('data loading failed - ' + filename)
+        return
+    }
+    return JSON.parse(response)
+}
+
+async function get_jet_data(filename) {
+    response = await invoke('get_jet_data', {filename:filename})
         .then((response) => {
             return response;
         })
