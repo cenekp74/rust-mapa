@@ -78,13 +78,17 @@ body {
     visibility: hidden;
 }
 
-#maxGradT {
+#maxGradT, #jet {
     visibility: hidden;
-    float: right;
     background-color: #dae9f5;
     border: 1px solid grey;
     padding: .5rem;
     border-radius: 3px;
+    margin-top: .2rem;
+}
+
+#details-container {
+    float: right;
 }
 
 .alert {

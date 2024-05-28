@@ -311,6 +311,15 @@ function reload() {
 
     window.config['datetime'] = datetime
 
+    document.getElementById("jet").style.visibility = 'visible'
+    let jet = window.data["jet"][datetime]
+    if (typeof jet === 'undefined') {
+        document.getElementById("jet").innerHTML = "No jet data"
+    }
+    else {
+        document.getElementById("jet").innerHTML = `Jet: ${jet}`
+    }
+
     if (window.config['showGradT']) {
         showPointsGradT(datetime, window.data["gradT"]);
         document.getElementById('scale').style.visibility = 'visible'
