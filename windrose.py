@@ -72,9 +72,14 @@ def main():
         df_month = df.filter(pl.col('datetime').str.slice(4, length=2) == month)
         if df_month.is_empty(): continue
         filtered_df_tf = df_month.filter(pl.col('type') == 1)
-        data_theta = np.radians(filtered_df_tf["dir[deg]"].to_list())
+        data_theta = list(np.radians(filtered_df_tf["dir[deg]"].to_list()))
         data_r = filtered_df_tf["v[m/s]"].to_list()
         data_gradt = [float(x.split(' ')[0]) for x in filtered_df_tf["max_gradT (station)"].to_list()]
+        for index, v in enumerate(data_r): # zajimaji me jenom fronty s rychosti pres 5m/s
+            if v < 5:
+                del data_r[index]
+                del data_gradt[index]
+                del data_theta[index]
         create_windrose(data_theta, data_r, data_gradt, colormap='inferno', filaname=f'windrose/windrose_tf_{YEAR}_{month}')
 
         filtered_df_sf = df_month.filter(pl.col('type') == -1)
